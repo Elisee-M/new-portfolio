@@ -200,9 +200,10 @@ const PortfolioWebsite = () => {
           const ps = ease(earlyLp);
           const photoLeft = 25;
           const photoRight = 75;
-          const from = side === 'right' ? photoRight : photoLeft;
-          const to = side === 'right' ? photoLeft : photoRight;
-          const leftPos = from + (to - from) * ps;
+          const prevCs = Math.max(cs - 1, 0);
+          const prevTarget = sections[prevCs]?.side === 'right' ? photoRight : photoLeft;
+          const currentTarget = sections[cs]?.side === 'right' ? photoRight : photoLeft;
+          const leftPos = prevTarget + (currentTarget - prevTarget) * ps;
 
           const yOffset = Math.sin(p * Math.PI * 3) * 12;
           const rot = (cs % 2 === 0 ? 1 : -1) * ps * 2;
@@ -275,26 +276,26 @@ const PortfolioWebsite = () => {
         <div className="absolute inset-0">
           <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[500px] h-[500px] bg-blue-500/8 rounded-full blur-[120px]"></div>
         </div>
-        <div ref={photoRef} className="absolute top-1/2 will-change-transform" style={{ left: '80%', transform: 'translate(-50%, -50%)' }}>
+        <div ref={photoRef} className="absolute top-1/2 will-change-transform" style={{ left: '75%', transform: 'translate(-50%, -50%)' }}>
           <div className="absolute inset-0 rounded-full" style={{ boxShadow: '0 0 50px rgba(59,130,246,0.15)', width: 'calc(100% + 12px)', height: 'calc(100% + 12px)', top: '-6px', left: '-6px' }}></div>
           <img src="/image.png" alt="Elisee" className="w-64 h-64 md:w-72 md:h-72 rounded-full object-cover" style={{ backfaceVisibility: 'hidden' }} />
         </div>
       </div>
 
       {/* ===== CIRCULAR NAV (Desktop - right side) ===== */}
-      <div className="fixed z-40 hidden lg:block" style={{ right: '55px', top: '50%', width: 0, height: 0 }}>
+      <div className="fixed z-40 hidden lg:block" style={{ right: '15px', top: '50%', width: 0, height: 0 }}>
         {navLinks.map((link, i) => {
-          const angle = 115 + i * 26;
+          const angle = 108 + i * 28.8;
           const rad = angle * Math.PI / 180;
-          const r = 85;
+          const r = 120;
           const x = Math.cos(rad) * r;
           const y = Math.sin(rad) * r;
           return (
             <a key={link.id} href={`#${link.id}`}
-              className="sidebar-btn group absolute flex items-center justify-center w-9 h-9 rounded-full border border-white/15 text-blue-300 transition-all duration-300 ease-out hover:scale-110 hover:border-blue-400/50 hover:text-blue-200 active:scale-95 relative"
+              className="sidebar-btn group absolute flex items-center justify-center w-8 h-8 rounded-full border border-white/15 text-blue-300 transition-all duration-300 ease-out hover:scale-110 hover:border-blue-400/50 hover:text-blue-200 active:scale-95 relative"
               style={{ left: x, top: y, transform: 'translate(-50%, -50%)' }}
             >
-              <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24" strokeWidth={2}>
+              <svg className="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24" strokeWidth={2}>
                 <path strokeLinecap="round" strokeLinejoin="round" d={link.icon} />
               </svg>
               <span className="absolute right-full mr-3 px-2.5 py-1 bg-black/70 text-white text-[11px] rounded whitespace-nowrap opacity-0 group-hover:opacity-100 transition-opacity duration-200 pointer-events-none">
