@@ -343,7 +343,16 @@ const PortfolioWebsite = () => {
       const isMobile = window.innerWidth < 1024;
 
       if (isMobile) {
-        gsap.set(photo, { xPercent: -50, yPercent: 0, left: '50%', top: '15%' });
+        const photoInner = photo.querySelector('.rounded-full.overflow-hidden');
+        const photoGlow = photo.querySelector('.rounded-full.absolute');
+        gsap.set(photo, { xPercent: -50, yPercent: 0, left: '50%', top: '70%' });
+
+        const tl = gsap.timeline({
+          scrollTrigger: { trigger: content, start: 'top top', end: 'top 35%', scrub: 1 }
+        });
+        tl.to(photo, { top: '50%', yPercent: -50, ease: 'none' }, 0);
+        tl.to(photoInner, { borderRadius: '0%', scale: 6, ease: 'none' }, 0);
+        tl.to(photoGlow, { opacity: 0, ease: 'none' }, 0);
 
         ScrollTrigger.create({
           trigger: content,
@@ -357,14 +366,6 @@ const PortfolioWebsite = () => {
             if (cs !== currentSection.current) {
               currentSection.current = cs;
               document.querySelectorAll('.mob-nav-btn').forEach((el, i) => el.classList.toggle('active', i === cs));
-            }
-
-            if (p < 0.35) {
-              const pp = p / 0.35;
-              photo.style.transform = `translate(-50%, 0px) scale(${1 - pp * 0.65})`;
-              photo.style.opacity = 1 - pp;
-            } else {
-              photo.style.opacity = '0';
             }
 
             if (progress) progress.style.width = `${p * 100}%`;
