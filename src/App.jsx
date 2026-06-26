@@ -320,6 +320,8 @@ const PortfolioWebsite = () => {
   }, []);
 
   useEffect(() => {
+    let mm = null;
+
     const loadGSAP = () => {
       const s1 = document.createElement('script');
       s1.src = 'https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/gsap.min.js';
@@ -340,9 +342,11 @@ const PortfolioWebsite = () => {
       const total = secs.length;
       const photoLeft = 15;
       const photoRight = 75;
-      const isMobile = window.innerWidth < 1024;
 
-      if (isMobile) {
+      if (mm) mm.revert();
+      mm = ScrollTrigger.matchMedia();
+
+      mm.add('(max-width: 1023px)', () => {
         const photoInner = photo.querySelector('.rounded-full.overflow-hidden');
         const photoGlow = photo.querySelector('.rounded-full.absolute');
 
@@ -378,7 +382,9 @@ const PortfolioWebsite = () => {
             if (progress) progress.style.width = `${p * 100}%`;
           }
         });
-      } else {
+      });
+
+      mm.add('(min-width: 1024px)', () => {
         const target = sectionMeta[0]?.side === 'right' ? photoRight : photoLeft;
         gsap.set(photo, { xPercent: -50, yPercent: -50, left: `${target}%` });
         const setPhotoY = gsap.quickSetter(photo, 'y', 'px');
@@ -405,13 +411,16 @@ const PortfolioWebsite = () => {
             if (progress) progress.style.width = `${p * 100}%`;
           }
         });
-      }
+      });
 
       ScrollTrigger.refresh();
     };
 
     loadGSAP();
-    return () => { if (window.ScrollTrigger) ScrollTrigger.getAll().forEach((t) => t.kill()); };
+    return () => {
+      if (mm) mm.revert();
+      if (window.ScrollTrigger) ScrollTrigger.getAll().forEach((t) => t.kill());
+    };
   }, []);
 
   // Smooth scroll on sidebar / mobile nav clicks
