@@ -350,8 +350,8 @@ const PortfolioWebsite = () => {
 
           const earlyLp = Math.min(lp / 0.25, 1);
           const ps = ease(earlyLp);
-          const photoLeft = 25;
-          const photoRight = 75;
+          const photoLeft = 15;
+          const photoRight = 85;
           const prevCs = Math.max(cs - 1, 0);
           const prevTarget = sectionMeta[prevCs]?.side === 'right' ? photoRight : photoLeft;
           const currentTarget = sectionMeta[cs]?.side === 'right' ? photoRight : photoLeft;
@@ -477,7 +477,7 @@ const PortfolioWebsite = () => {
             ref={(el) => (sectionRefs.current[i] = el)}
             className="min-h-screen flex items-center px-6 md:px-12 py-20 bg-slate-950/60"
           >
-            <div className={`w-full ${sec.side === 'right' ? 'lg:w-1/2 lg:pr-12' : 'lg:w-1/2 lg:pl-12 lg:ml-auto'}`}>
+            <div className={`w-full ${sec.side === 'right' ? 'lg:w-1/2 lg:pr-24' : 'lg:w-1/2 lg:pl-24 lg:ml-auto'}`}>
               <div className="max-w-lg">
                 {sec.content}
               </div>
