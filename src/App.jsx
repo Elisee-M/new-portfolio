@@ -371,18 +371,18 @@ const PortfolioWebsite = () => {
       secs.forEach((section, i) => {
         const items = section.querySelectorAll('.animate-in');
         if (items.length) {
-          gsap.fromTo(items, { x: sectionMeta[i]?.side === 'left' ? 40 : -40, opacity: 0 }, {
-            x: 0, opacity: 1, stagger: 0.1, duration: 0.7, ease: 'power2.out',
+          gsap.fromTo(items, { scale: 0.9, rotate: 2, opacity: 0 }, {
+            scale: 1, rotate: 0, opacity: 1, stagger: 0.08, duration: 0.7, ease: 'back.out(1.7)',
             immediateRender: false,
-            scrollTrigger: { trigger: section, start: 'top 80%', end: 'top 30%', toggleActions: 'play none none reverse' }
+            scrollTrigger: { trigger: section, start: 'top 85%', end: 'top 30%', toggleActions: 'play reverse play reverse' }
           });
         }
         const cards = section.querySelectorAll('.card-in');
         if (cards.length) {
-          gsap.fromTo(cards, { y: 40, opacity: 0 }, {
-            y: 0, opacity: 1, stagger: 0.1, duration: 0.5, ease: 'power2.out',
+          gsap.fromTo(cards, { scale: 0.9, rotate: 2, opacity: 0 }, {
+            scale: 1, rotate: 0, opacity: 1, stagger: 0.06, duration: 0.7, ease: 'back.out(1.7)',
             immediateRender: false,
-            scrollTrigger: { trigger: section, start: 'top 75%', end: 'top 35%', toggleActions: 'play none none reverse' }
+            scrollTrigger: { trigger: section, start: 'top 80%', end: 'top 35%', toggleActions: 'play reverse play reverse' }
           });
         }
       });
@@ -390,14 +390,14 @@ const PortfolioWebsite = () => {
       const tl = document.querySelector('.timeline-line');
       if (tl) {
         gsap.fromTo(tl, { scaleY: 0 }, {
-          scaleY: 1, duration: 1, ease: 'power2.out', immediateRender: false,
-          scrollTrigger: { trigger: '.timeline', start: 'top 75%', end: 'top 30%', toggleActions: 'play none none reverse' }
+          scaleY: 1, duration: 1, ease: 'back.out(1.7)', immediateRender: false,
+          scrollTrigger: { trigger: '.timeline', start: 'top 80%', end: 'top 30%', toggleActions: 'play reverse play reverse' }
         });
       }
       document.querySelectorAll('.timeline-item').forEach((item) => {
-        gsap.fromTo(item, { x: -30, opacity: 0 }, {
-          x: 0, opacity: 1, duration: 0.5, ease: 'power2.out', immediateRender: false,
-          scrollTrigger: { trigger: item, start: 'top 80%', end: 'top 40%', toggleActions: 'play none none reverse' }
+        gsap.fromTo(item, { scale: 0.9, rotate: 2, opacity: 0 }, {
+          scale: 1, rotate: 0, opacity: 1, duration: 0.7, ease: 'back.out(1.7)', immediateRender: false,
+          scrollTrigger: { trigger: item, start: 'top 85%', end: 'top 40%', toggleActions: 'play reverse play reverse' }
         });
       });
 
