@@ -28,11 +28,11 @@ const loaderSteps = [
 const sectionMeta = [
   { id: 'hero', side: 'right' },
   { id: 'about', side: 'left' },
-  { id: 'skills', side: 'left' },
-  { id: 'projects', side: 'right' },
+  { id: 'skills', side: 'right' },
+  { id: 'projects', side: 'left' },
   { id: 'experience', side: 'right' },
   { id: 'certifications', side: 'left' },
-  { id: 'contact', side: 'left' }
+  { id: 'contact', side: 'right' }
 ];
 
 const PortfolioWebsite = () => {
@@ -52,6 +52,8 @@ const PortfolioWebsite = () => {
   const [subtitleDone, setSubtitleDone] = useState(false);
   const [sidebarKey, setSidebarKey] = useState(0);
   const [photoVisible, setPhotoVisible] = useState(false);
+
+  useEffect(() => { window.scrollTo(0, 0); window.history.scrollRestoration = 'manual'; }, []);
 
   useEffect(() => {
     if (loadingStep >= loaderSteps.length) return;
@@ -322,8 +324,6 @@ const PortfolioWebsite = () => {
       document.body.appendChild(s1);
     };
 
-    const ease = (t) => t < 0.5 ? 2 * t * t : -1 + (4 - 2 * t) * t;
-
     const init = () => {
       if (!window.gsap) return;
       const photo = photoRef.current;
@@ -331,6 +331,11 @@ const PortfolioWebsite = () => {
       const progress = progressRef.current;
       const secs = sectionRefs.current.filter(Boolean);
       const total = secs.length;
+      const photoLeft = 15;
+      const photoRight = 85;
+
+      const target = sectionMeta[0]?.side === 'right' ? photoRight : photoLeft;
+      gsap.set(photo, { left: `${target}%` });
 
       ScrollTrigger.create({
         trigger: content,
@@ -340,29 +345,18 @@ const PortfolioWebsite = () => {
           const p = self.progress;
           const sw = 1 / total;
           const cs = Math.min(Math.floor(p / sw), total - 1);
-          const lp = (p - cs * sw) / sw;
 
           if (cs !== currentSection.current) {
             currentSection.current = cs;
             document.querySelectorAll('.sidebar-btn').forEach((el, i) => el.classList.toggle('active', i === cs));
             document.querySelectorAll('.mob-nav-btn').forEach((el, i) => el.classList.toggle('active', i === cs));
+            const target = sectionMeta[cs]?.side === 'right' ? photoRight : photoLeft;
+            gsap.to(photo, { left: `${target}%`, duration: 0.5, ease: 'back.out(1.7)', overwrite: 'auto' });
           }
 
-          const earlyLp = Math.min(lp / 0.25, 1);
-          const ps = ease(earlyLp);
-          const photoLeft = 15;
-          const photoRight = 85;
-          const prevCs = Math.max(cs - 1, 0);
-          const prevTarget = sectionMeta[prevCs]?.side === 'right' ? photoRight : photoLeft;
-          const currentTarget = sectionMeta[cs]?.side === 'right' ? photoRight : photoLeft;
-          const leftPos = prevTarget + (currentTarget - prevTarget) * ps;
-
           const yOffset = Math.sin(p * Math.PI * 3) * 12;
-          const rot = (cs % 2 === 0 ? 1 : -1) * ps * 2;
           const sc = 1 + Math.sin(p * Math.PI * 2) * 0.04;
-
-          photo.style.left = `${leftPos}%`;
-          photo.style.transform = `translate(-50%, -50%) translateY(${yOffset}px) scale(${sc}) rotate(${rot}deg)`;
+          photo.style.transform = `translate(-50%, -50%) translateY(${yOffset}px) scale(${sc})`;
 
           if (progress) progress.style.width = `${p * 100}%`;
         }
@@ -417,9 +411,9 @@ const PortfolioWebsite = () => {
         <div className="absolute inset-0">
           <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[500px] h-[500px] bg-blue-500/8 rounded-full blur-[120px]"></div>
         </div>
-        <div ref={photoRef} className="absolute top-1/2 will-change-transform" style={{ left: '75%', transform: 'translate(-50%, -50%)', opacity: photoVisible ? 1 : 0, transition: 'opacity 0.8s ease, transform 0.8s ease' }}>
+        <div ref={photoRef} className="absolute top-1/2 will-change-transform" style={{ left: '85%', transform: 'translate(-50%, -50%)', opacity: photoVisible ? 1 : 0, transition: 'opacity 0.8s ease' }}>
           <div className="absolute inset-0 rounded-full" style={{ opacity: photoVisible ? 0.3 : 0, transition: 'opacity 0.8s ease', boxShadow: '0 0 60px rgba(59,130,246,0.3), 0 0 120px rgba(59,130,246,0.15)', width: 'calc(100% + 16px)', height: 'calc(100% + 16px)', top: '-8px', left: '-8px' }}></div>
-          <img src="/image.png" alt="Elisee" className="w-64 h-64 md:w-72 md:h-72 rounded-full object-cover brightness-110" style={{ backfaceVisibility: 'hidden' }} />
+          <img src="/image.png" alt="Elisee" className="w-72 h-72 md:w-80 md:h-80 rounded-full object-cover brightness-110" style={{ backfaceVisibility: 'hidden' }} />
         </div>
       </div>
 
