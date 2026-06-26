@@ -52,6 +52,8 @@ const PortfolioWebsite = () => {
   const [subtitleDone, setSubtitleDone] = useState(false);
   const [sidebarKey, setSidebarKey] = useState(0);
   const [photoVisible, setPhotoVisible] = useState(false);
+  const [showAllProjects, setShowAllProjects] = useState(false);
+  const [showAllCertifications, setShowAllCertifications] = useState(false);
 
   useEffect(() => { window.scrollTo(0, 0); window.history.scrollRestoration = 'manual'; }, []);
 
@@ -132,8 +134,8 @@ const PortfolioWebsite = () => {
           <p className="text-lg md:text-xl text-blue-200/80 mb-6 font-light min-h-[1.5em]" style={{ opacity: heroPhase >= 3 ? 1 : 0, transform: heroPhase >= 3 ? 'translateY(0)' : 'translateY(30px)', transition: 'opacity 0.6s ease, transform 0.6s ease' }}>{heroPhase >= 3 && <Typewriter startDelay={200} onFirstDone={() => setSubtitleDone(true)} />}</p>
           <p className="text-gray-400 leading-relaxed mb-8 max-w-md" style={{ opacity: heroPhase >= 4 ? 1 : 0, transform: heroPhase >= 4 ? 'translateY(0)' : 'translateY(30px)', transition: 'opacity 0.6s ease, transform 0.6s ease' }}>I craft seamless digital experiences and bridge the gap between hardware and software through innovative solutions.</p>
           <div className="flex gap-3 sm:gap-4 flex-wrap" style={{ opacity: heroPhase >= 5 ? 1 : 0, transform: heroPhase >= 5 ? 'translateY(0)' : 'translateY(30px)', transition: 'opacity 0.6s ease, transform 0.6s ease' }}>
-            <a href="#about" className="px-5 sm:px-6 py-2.5 sm:py-3 bg-blue-500/20 border border-blue-400/50 rounded-lg hover:bg-blue-500/30 text-blue-300 font-medium text-xs sm:text-sm">Explore My Work</a>
-            <a href="#contact" className="px-5 sm:px-6 py-2.5 sm:py-3 border border-white/10 rounded-lg hover:bg-white/5 text-gray-300 font-medium text-xs sm:text-sm">Contact Me</a>
+            <a href="#about" className="px-6 py-3 bg-gradient-to-r from-blue-500 to-cyan-500 rounded-lg hover:from-blue-400 hover:to-cyan-400 text-white font-semibold text-sm shadow-lg shadow-blue-500/25 transition-all">Explore My Work</a>
+            <a href="#contact" className="px-6 py-3 border border-blue-400/50 rounded-lg hover:bg-blue-500/10 text-blue-300 font-semibold text-sm transition-all">Contact Me</a>
           </div>
         </div>
       )
@@ -174,7 +176,13 @@ const PortfolioWebsite = () => {
       content: (
         <div>
           <p className="text-blue-400 font-mono text-sm mb-2 tracking-[0.2em] uppercase">Portfolio</p>
-          <h2 className="text-3xl md:text-4xl font-bold mb-8 text-blue-100">Projects</h2>
+          <div className="flex items-center justify-between mb-8">
+            <h2 className="text-3xl md:text-4xl font-bold text-blue-100">Projects</h2>
+            <button onClick={() => setShowAllProjects(true)} className="hidden sm:flex items-center gap-1.5 px-4 py-2 bg-blue-500/20 border border-blue-400/50 rounded-lg hover:bg-blue-500/30 text-blue-300 font-medium text-xs transition-all group">
+              <span>View All</span>
+              <svg className="w-3.5 h-3.5 transition-transform group-hover:translate-x-0.5" fill="none" stroke="currentColor" viewBox="0 0 24 24" strokeWidth={2}><path strokeLinecap="round" strokeLinejoin="round" d="M17 8l4 4m0 0l-4 4m4-4H3" /></svg>
+            </button>
+          </div>
           <div className="space-y-3">
             {data.projects.map((p, i) => (
               <div key={p.id || i} className="card-in group backdrop-blur-2xl bg-slate-900/80 border border-white/10 rounded-xl p-5 hover:bg-blue-500/10 hover:border-blue-400/40 transition-all">
@@ -184,6 +192,10 @@ const PortfolioWebsite = () => {
               </div>
             ))}
           </div>
+          <button onClick={() => setShowAllProjects(true)} className="sm:hidden mt-4 w-full flex items-center justify-center gap-1.5 px-4 py-2.5 bg-blue-500/20 border border-blue-400/50 rounded-lg hover:bg-blue-500/30 text-blue-300 font-medium text-sm transition-all group">
+            <span>View All Projects</span>
+            <svg className="w-4 h-4 transition-transform group-hover:translate-x-0.5" fill="none" stroke="currentColor" viewBox="0 0 24 24" strokeWidth={2}><path strokeLinecap="round" strokeLinejoin="round" d="M17 8l4 4m0 0l-4 4m4-4H3" /></svg>
+          </button>
 
           {/* Rating */}
           <div className="mt-8 p-5 backdrop-blur-2xl bg-slate-900/80 border border-white/10 rounded-xl">
@@ -278,7 +290,7 @@ const PortfolioWebsite = () => {
     },
     {
       id: 'certifications', side: 'left',
-      content: <CertificationsSection />
+      content: <CertificationsSection onViewAll={() => setShowAllCertifications(true)} />
     },
     {
       id: 'contact', side: 'left',
@@ -484,6 +496,71 @@ const PortfolioWebsite = () => {
       </button>
 
       {showAdmin && <AdminPanel onClose={() => setShowAdmin(false)} />}
+
+      {/* ===== ALL PROJECTS MODAL ===== */}
+      {showAllProjects && (
+        <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/60 backdrop-blur-sm p-4" onClick={() => setShowAllProjects(false)}>
+          <div className="bg-slate-900 border border-white/10 rounded-xl w-full max-w-3xl max-h-[85vh] overflow-y-auto" onClick={(e) => e.stopPropagation()}>
+            <div className="sticky top-0 z-10 flex items-center justify-between p-6 pb-4 bg-slate-900/95 backdrop-blur-md border-b border-white/10">
+              <div>
+                <p className="text-blue-400 font-mono text-xs mb-1 tracking-[0.2em] uppercase">Portfolio</p>
+                <h3 className="text-xl font-semibold text-blue-100">All Projects ({data.projects.length})</h3>
+              </div>
+              <button onClick={() => setShowAllProjects(false)} className="w-8 h-8 flex items-center justify-center rounded-full bg-slate-800 border border-white/10 text-gray-400 hover:text-blue-300 hover:border-blue-400/50 transition-all">
+                <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24" strokeWidth={2}><path strokeLinecap="round" strokeLinejoin="round" d="M6 18L18 6M6 6l12 12" /></svg>
+              </button>
+            </div>
+            <div className="p-6 pt-4 grid gap-4 md:grid-cols-2">
+              {data.projects.map((p, i) => (
+                <div key={p.id || i} className="backdrop-blur-2xl bg-slate-800/80 border border-white/10 rounded-xl p-5 hover:border-blue-400/40 transition-all">
+                  <h4 className="text-base font-semibold text-blue-300 mb-1">{p.title}</h4>
+                  <p className="text-sm text-gray-400 mb-2 leading-relaxed">{p.desc}</p>
+                  {p.tech && <div className="flex flex-wrap gap-1.5">{p.tech.split(', ').map((t, ti) => <span key={ti} className="px-2 py-0.5 bg-blue-500/10 border border-blue-400/20 rounded text-xs text-blue-400/80">{t}</span>)}</div>}
+                </div>
+              ))}
+              {data.projects.length === 0 && <p className="text-gray-500 text-center py-12 col-span-2">No projects yet.</p>}
+            </div>
+          </div>
+        </div>
+      )}
+
+      {/* ===== ALL CERTIFICATIONS MODAL ===== */}
+      {showAllCertifications && (
+        <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/60 backdrop-blur-sm p-4" onClick={() => setShowAllCertifications(false)}>
+          <div className="bg-slate-900 border border-white/10 rounded-xl w-full max-w-3xl max-h-[85vh] overflow-y-auto" onClick={(e) => e.stopPropagation()}>
+            <div className="sticky top-0 z-10 flex items-center justify-between p-6 pb-4 bg-slate-900/95 backdrop-blur-md border-b border-white/10">
+              <div>
+                <p className="text-blue-400 font-mono text-xs mb-1 tracking-[0.2em] uppercase">Credentials</p>
+                <h3 className="text-xl font-semibold text-blue-100">All Certifications ({data.certifications.length})</h3>
+              </div>
+              <button onClick={() => setShowAllCertifications(false)} className="w-8 h-8 flex items-center justify-center rounded-full bg-slate-800 border border-white/10 text-gray-400 hover:text-blue-300 hover:border-blue-400/50 transition-all">
+                <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24" strokeWidth={2}><path strokeLinecap="round" strokeLinejoin="round" d="M6 18L18 6M6 6l12 12" /></svg>
+              </button>
+            </div>
+            <div className="p-6 pt-4 space-y-3">
+              {data.certifications.map((c, i) => (
+                <div key={c.id} className="backdrop-blur-2xl bg-slate-800/80 border border-white/10 rounded-xl p-5 hover:border-blue-400/40 transition-all">
+                  <div className="flex items-start justify-between gap-4">
+                    <div className="min-w-0">
+                      <h4 className="text-base font-semibold text-blue-300 mb-1">{c.title}</h4>
+                      <div className="flex items-center gap-2 flex-wrap">
+                        <span className="text-xs text-blue-400/70">{c.issuer}</span>
+                        <span className="text-xs text-gray-600">•</span>
+                        <span className="text-xs text-gray-500">{c.date}</span>
+                      </div>
+                      {c.desc && <p className="text-sm text-gray-400 mt-2 leading-relaxed">{c.desc}</p>}
+                    </div>
+                    <svg className="w-8 h-8 shrink-0 text-blue-400/30" fill="none" stroke="currentColor" viewBox="0 0 24 24" strokeWidth={1.5}>
+                      <path strokeLinecap="round" strokeLinejoin="round" d="M9 12.75L11.25 15 15 9.75M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
+                    </svg>
+                  </div>
+                </div>
+              ))}
+              {data.certifications.length === 0 && <p className="text-gray-500 text-center py-12">No certifications yet.</p>}
+            </div>
+          </div>
+        </div>
+      )}
 
       {/* ===== CIRCULAR NAV (Desktop) ===== */}
       {sidebarKey > 0 && navPositions.map(({ link, right, top }, i) => (
