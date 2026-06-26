@@ -28,11 +28,11 @@ const loaderSteps = [
 const sectionMeta = [
   { id: 'hero', side: 'right' },
   { id: 'about', side: 'left' },
-  { id: 'skills', side: 'right' },
-  { id: 'projects', side: 'left' },
+  { id: 'skills', side: 'left' },
+  { id: 'projects', side: 'right' },
   { id: 'experience', side: 'right' },
   { id: 'certifications', side: 'left' },
-  { id: 'contact', side: 'right' }
+  { id: 'contact', side: 'left' }
 ];
 
 const PortfolioWebsite = () => {
@@ -335,7 +335,8 @@ const PortfolioWebsite = () => {
       const photoRight = 85;
 
       const target = sectionMeta[0]?.side === 'right' ? photoRight : photoLeft;
-      gsap.set(photo, { left: `${target}%` });
+      gsap.set(photo, { xPercent: -50, yPercent: -50, left: `${target}%` });
+      const setPhotoY = gsap.quickSetter(photo, 'y', 'px');
 
       ScrollTrigger.create({
         trigger: content,
@@ -351,12 +352,10 @@ const PortfolioWebsite = () => {
             document.querySelectorAll('.sidebar-btn').forEach((el, i) => el.classList.toggle('active', i === cs));
             document.querySelectorAll('.mob-nav-btn').forEach((el, i) => el.classList.toggle('active', i === cs));
             const target = sectionMeta[cs]?.side === 'right' ? photoRight : photoLeft;
-            gsap.to(photo, { left: `${target}%`, duration: 0.5, ease: 'back.out(1.7)', overwrite: 'auto' });
+            gsap.to(photo, { left: `${target}%`, duration: 0.6, ease: 'power2.out', overwrite: 'auto' });
           }
 
-          const yOffset = Math.sin(p * Math.PI * 3) * 12;
-          const sc = 1 + Math.sin(p * Math.PI * 2) * 0.04;
-          photo.style.transform = `translate(-50%, -50%) translateY(${yOffset}px) scale(${sc})`;
+          setPhotoY(Math.sin(p * Math.PI * 3) * 12);
 
           if (progress) progress.style.width = `${p * 100}%`;
         }
@@ -411,9 +410,11 @@ const PortfolioWebsite = () => {
         <div className="absolute inset-0">
           <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[500px] h-[500px] bg-blue-500/8 rounded-full blur-[120px]"></div>
         </div>
-        <div ref={photoRef} className="absolute top-1/2 will-change-transform" style={{ left: '85%', transform: 'translate(-50%, -50%)', opacity: photoVisible ? 1 : 0, transition: 'opacity 0.8s ease' }}>
+        <div ref={photoRef} className="absolute top-1/2 will-change-transform" style={{ left: '85%', opacity: photoVisible ? 1 : 0, transition: 'opacity 0.8s ease' }}>
           <div className="absolute inset-0 rounded-full" style={{ opacity: photoVisible ? 0.3 : 0, transition: 'opacity 0.8s ease', boxShadow: '0 0 60px rgba(59,130,246,0.3), 0 0 120px rgba(59,130,246,0.15)', width: 'calc(100% + 16px)', height: 'calc(100% + 16px)', top: '-8px', left: '-8px' }}></div>
-          <img src="/image.png" alt="Elisee" className="w-72 h-72 md:w-80 md:h-80 rounded-full object-cover brightness-110" style={{ backfaceVisibility: 'hidden' }} />
+          <div className="w-72 h-72 md:w-80 md:h-80 rounded-full overflow-hidden">
+            <img src="/image.png" alt="Elisee" className="w-full h-full object-cover brightness-110" />
+          </div>
         </div>
       </div>
 
