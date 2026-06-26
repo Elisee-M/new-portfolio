@@ -39,12 +39,14 @@ const PortfolioWebsite = () => {
     {
       id: 'hero', side: 'right',
       content: (
-        <div>
-          <p className="text-blue-400 font-mono text-sm mb-4 tracking-[0.2em] uppercase">Hello, I'm</p>
-          <h1 className="text-5xl md:text-6xl font-bold mb-4 bg-gradient-to-r from-blue-300 via-blue-400 to-cyan-400 bg-clip-text text-transparent">Elisee</h1>
-          <p className="text-lg md:text-xl text-blue-200/80 mb-6 font-light min-h-[1.5em]"><Typewriter /></p>
-          <p className="text-gray-400 leading-relaxed mb-8 max-w-md">I craft seamless digital experiences and bridge the gap between hardware and software through innovative solutions.</p>
-          <div className="flex gap-4">
+        <div className="hero-section">
+          <p className="hero-line hero-hello text-blue-400 font-mono text-sm mb-4 tracking-[0.2em] uppercase">Hello ✌, I'm</p>
+          <h1 className="text-5xl md:text-6xl font-bold mb-4 bg-gradient-to-r from-blue-300 via-blue-400 to-cyan-400 bg-clip-text text-transparent min-h-[1.2em]">
+            <Typewriter words={['Elisee']} loop={false} typeSpeed={80} showCursor={false} startDelay={500} />
+          </h1>
+          <p className="text-lg md:text-xl text-blue-200/80 mb-6 font-light min-h-[1.5em]"><Typewriter startDelay={1000} /></p>
+          <p className="hero-line hero-desc text-gray-400 leading-relaxed mb-8 max-w-md">I craft seamless digital experiences and bridge the gap between hardware and software through innovative solutions.</p>
+          <div className="hero-line hero-btns flex gap-4">
             <a href="#about" className="px-6 py-3 bg-blue-500/20 border border-blue-400/50 rounded-lg hover:bg-blue-500/30 text-blue-300 font-medium text-sm">Explore My Work</a>
             <a href="#contact" className="px-6 py-3 border border-white/10 rounded-lg hover:bg-white/5 text-gray-300 font-medium text-sm">Contact Me</a>
           </div>
@@ -278,8 +280,8 @@ const PortfolioWebsite = () => {
         <div className="absolute inset-0">
           <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[500px] h-[500px] bg-blue-500/8 rounded-full blur-[120px]"></div>
         </div>
-        <div ref={photoRef} className="absolute top-1/2 will-change-transform photo-float" style={{ left: '75%', transform: 'translate(-50%, -50%)' }}>
-          <div className="absolute inset-0 rounded-full photo-glow" style={{ boxShadow: '0 0 60px rgba(59,130,246,0.3), 0 0 120px rgba(59,130,246,0.15)', width: 'calc(100% + 16px)', height: 'calc(100% + 16px)', top: '-8px', left: '-8px' }}></div>
+        <div ref={photoRef} className="absolute top-1/2 will-change-transform photo-float photo-pop-in" style={{ left: '75%', transform: 'translate(-50%, -50%)' }}>
+          <div className="absolute inset-0 rounded-full photo-glow photo-pop-in-glow" style={{ boxShadow: '0 0 60px rgba(59,130,246,0.3), 0 0 120px rgba(59,130,246,0.15)', width: 'calc(100% + 16px)', height: 'calc(100% + 16px)', top: '-8px', left: '-8px' }}></div>
           <img src="/image.png" alt="Elisee" className="w-64 h-64 md:w-72 md:h-72 rounded-full object-cover brightness-110 photo-img" style={{ backfaceVisibility: 'hidden' }} />
         </div>
       </div>
@@ -307,7 +309,7 @@ const PortfolioWebsite = () => {
           <svg className="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24" strokeWidth={2}>
             <path strokeLinecap="round" strokeLinejoin="round" d={link.icon} />
           </svg>
-          <span className="absolute right-full mr-3 px-2.5 py-1 bg-black/70 text-white text-[11px] rounded whitespace-nowrap opacity-0 group-hover:opacity-100 transition-opacity duration-200 pointer-events-none">
+          <span className="absolute right-full mr-3 px-2.5 py-1 bg-black/70 text-blue-300 italic font-serif text-[11px] rounded whitespace-nowrap opacity-0 group-hover:opacity-100 transition-opacity duration-200 pointer-events-none">
             {link.label}
           </span>
         </a>
