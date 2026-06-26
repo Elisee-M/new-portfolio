@@ -88,13 +88,13 @@ const PortfolioWebsite = () => {
       id: 'hero', side: 'right',
       content: (
         <div className="hero-section">
-          <p className="hero-line hero-hello text-blue-400 font-mono text-sm mb-4 tracking-[0.2em] uppercase">Hello ✌, I'm</p>
-          <h1 className="text-5xl md:text-6xl font-bold mb-4 bg-gradient-to-r from-blue-300 via-blue-400 to-cyan-400 bg-clip-text text-transparent min-h-[1.2em]">
-            <Typewriter words={['Elisee']} loop={false} typeSpeed={80} showCursor={false} startDelay={600} />
+          <p className="hero-line hero-hello text-blue-400 font-mono text-sm mb-4 tracking-[0.2em] uppercase" style={{ opacity: heroPhase >= 1 ? 1 : 0, transform: heroPhase >= 1 ? 'translateY(0)' : 'translateY(30px)', transition: 'opacity 0.6s ease, transform 0.6s ease' }}>Hello ✌, I'm</p>
+          <h1 className="text-5xl md:text-6xl font-bold mb-4 bg-gradient-to-r from-blue-300 via-blue-400 to-cyan-400 bg-clip-text text-transparent min-h-[1.2em]" style={{ opacity: heroPhase >= 2 ? 1 : 0, transform: heroPhase >= 2 ? 'translateY(0)' : 'translateY(30px)', transition: 'opacity 0.6s ease, transform 0.6s ease' }}>
+            {heroPhase >= 2 && <Typewriter words={['Elisee']} loop={false} typeSpeed={80} showCursor={false} startDelay={300} />}
           </h1>
-          <p className="text-lg md:text-xl text-blue-200/80 mb-6 font-light min-h-[1.5em]"><Typewriter startDelay={2200} /></p>
-          <p className="hero-line hero-desc text-gray-400 leading-relaxed mb-8 max-w-md">I craft seamless digital experiences and bridge the gap between hardware and software through innovative solutions.</p>
-          <div className="hero-line hero-btns flex gap-4">
+          <p className="text-lg md:text-xl text-blue-200/80 mb-6 font-light min-h-[1.5em]" style={{ opacity: heroPhase >= 3 ? 1 : 0, transform: heroPhase >= 3 ? 'translateY(0)' : 'translateY(30px)', transition: 'opacity 0.6s ease, transform 0.6s ease' }}>{heroPhase >= 3 && <Typewriter startDelay={400} />}</p>
+          <p className="hero-line hero-desc text-gray-400 leading-relaxed mb-8 max-w-md" style={{ opacity: heroPhase >= 4 ? 1 : 0, transform: heroPhase >= 4 ? 'translateY(0)' : 'translateY(30px)', transition: 'opacity 0.6s ease, transform 0.6s ease' }}>I craft seamless digital experiences and bridge the gap between hardware and software through innovative solutions.</p>
+          <div className="hero-line hero-btns flex gap-4" style={{ opacity: heroPhase >= 5 ? 1 : 0, transform: heroPhase >= 5 ? 'translateY(0)' : 'translateY(30px)', transition: 'opacity 0.6s ease, transform 0.6s ease' }}>
             <a href="#about" className="px-6 py-3 bg-blue-500/20 border border-blue-400/50 rounded-lg hover:bg-blue-500/30 text-blue-300 font-medium text-sm">Explore My Work</a>
             <a href="#contact" className="px-6 py-3 border border-white/10 rounded-lg hover:bg-white/5 text-gray-300 font-medium text-sm">Contact Me</a>
           </div>
@@ -265,7 +265,7 @@ const PortfolioWebsite = () => {
         </div>
       )
     }
-  ], [data, rating, hoverRating, showRatingModal, ratingName, ratingEmail, ratingSubmitted]);
+  ], [data, rating, hoverRating, showRatingModal, ratingName, ratingEmail, ratingSubmitted, heroPhase]);
 
   const navPositions = useMemo(() => {
     const r = 95;
