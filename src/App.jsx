@@ -291,8 +291,8 @@ const PortfolioWebsite = () => {
           <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[500px] h-[500px] bg-blue-500/8 rounded-full blur-[120px]"></div>
         </div>
         <div ref={photoRef} className="absolute top-1/2 will-change-transform" style={{ left: '75%', transform: 'translate(-50%, -50%)' }}>
-          <div className="absolute inset-0 rounded-full" style={{ boxShadow: '0 0 50px rgba(59,130,246,0.15)', width: 'calc(100% + 12px)', height: 'calc(100% + 12px)', top: '-6px', left: '-6px' }}></div>
-          <img src="/image.png" alt="Elisee" className="w-64 h-64 md:w-72 md:h-72 rounded-full object-cover" style={{ backfaceVisibility: 'hidden' }} />
+          <div className="absolute inset-0 rounded-full" style={{ boxShadow: '0 0 60px rgba(59,130,246,0.3), 0 0 120px rgba(59,130,246,0.15)', width: 'calc(100% + 16px)', height: 'calc(100% + 16px)', top: '-8px', left: '-8px' }}></div>
+          <img src="/image.png" alt="Elisee" className="w-64 h-64 md:w-72 md:h-72 rounded-full object-cover brightness-110" style={{ backfaceVisibility: 'hidden' }} />
         </div>
       </div>
 
