@@ -19,8 +19,8 @@ const navLinks = [
 const sectionMeta = [
   { id: 'hero', side: 'right' },
   { id: 'about', side: 'left' },
-  { id: 'skills', side: 'right' },
-  { id: 'projects', side: 'left' },
+  { id: 'skills', side: 'left' },
+  { id: 'projects', side: 'right' },
   { id: 'experience', side: 'right' },
   { id: 'certifications', side: 'left' },
   { id: 'contact', side: 'left' }
@@ -29,6 +29,12 @@ const sectionMeta = [
 const PortfolioWebsite = () => {
   const { data } = usePortfolioData();
   const [showAdmin, setShowAdmin] = useState(false);
+  const [rating, setRating] = useState(0);
+  const [hoverRating, setHoverRating] = useState(0);
+  const [showRatingModal, setShowRatingModal] = useState(false);
+  const [ratingName, setRatingName] = useState('');
+  const [ratingEmail, setRatingEmail] = useState('');
+  const [ratingSubmitted, setRatingSubmitted] = useState(false);
   const photoRef = useRef(null);
   const contentRef = useRef(null);
   const progressRef = useRef(null);
@@ -68,7 +74,7 @@ const PortfolioWebsite = () => {
       )
     },
     {
-      id: 'skills', side: 'right',
+      id: 'skills', side: 'left',
       content: (
         <div>
           <p className="text-blue-400 font-mono text-sm mb-2 tracking-[0.2em] uppercase">Expertise</p>
@@ -85,7 +91,7 @@ const PortfolioWebsite = () => {
       )
     },
     {
-      id: 'projects', side: 'left',
+      id: 'projects', side: 'right',
       content: (
         <div>
           <p className="text-blue-400 font-mono text-sm mb-2 tracking-[0.2em] uppercase">Portfolio</p>
@@ -99,6 +105,72 @@ const PortfolioWebsite = () => {
               </div>
             ))}
           </div>
+
+          {/* Rating */}
+          <div className="mt-8 p-5 backdrop-blur-2xl bg-slate-900/80 border border-white/10 rounded-xl">
+            <p className="text-sm text-gray-300 mb-3">Rate my work</p>
+            {ratingSubmitted ? (
+              <p className="text-sm text-blue-400">Thank you for your feedback!</p>
+            ) : (
+              <div className="flex gap-1">
+                {[1, 2, 3, 4, 5].map((star) => (
+                  <button
+                    key={star}
+                    onMouseEnter={() => setHoverRating(star)}
+                    onMouseLeave={() => setHoverRating(0)}
+                    onClick={() => { setRating(star); setShowRatingModal(true); }}
+                    className="text-2xl transition-colors"
+                  >
+                    <span className={star <= (hoverRating || rating) ? 'text-yellow-400' : 'text-gray-600'}>★</span>
+                  </button>
+                ))}
+              </div>
+            )}
+          </div>
+
+          {/* Rating Modal */}
+          {showRatingModal && (
+            <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/60 backdrop-blur-sm" onClick={() => setShowRatingModal(false)}>
+              <div className="bg-slate-900 border border-white/10 rounded-xl p-6 w-full max-w-sm mx-4" onClick={(e) => e.stopPropagation()}>
+                <p className="text-blue-400 font-mono text-xs mb-1 tracking-[0.2em] uppercase">Feedback</p>
+                <h3 className="text-lg font-semibold text-blue-100 mb-4">You rated {rating} / 5</h3>
+                <input
+                  type="text"
+                  placeholder="Your name *"
+                  value={ratingName}
+                  onChange={(e) => setRatingName(e.target.value)}
+                  className="w-full mb-3 px-4 py-2.5 bg-slate-800 border border-white/10 rounded-lg text-gray-200 text-sm placeholder-gray-500 focus:outline-none focus:border-blue-500/50"
+                />
+                <input
+                  type="email"
+                  placeholder="Your email (optional)"
+                  value={ratingEmail}
+                  onChange={(e) => setRatingEmail(e.target.value)}
+                  className="w-full mb-4 px-4 py-2.5 bg-slate-800 border border-white/10 rounded-lg text-gray-200 text-sm placeholder-gray-500 focus:outline-none focus:border-blue-500/50"
+                />
+                <div className="flex gap-3">
+                  <button
+                    onClick={() => { setShowRatingModal(false); setRating(0); }}
+                    className="flex-1 px-4 py-2.5 border border-white/10 rounded-lg text-gray-400 text-sm hover:bg-white/5"
+                  >
+                    Cancel
+                  </button>
+                  <button
+                    onClick={() => {
+                      if (!ratingName.trim()) return;
+                      setRatingSubmitted(true);
+                      setShowRatingModal(false);
+                      setRatingName('');
+                      setRatingEmail('');
+                    }}
+                    className="flex-1 px-4 py-2.5 bg-blue-500/20 border border-blue-400/50 rounded-lg text-blue-300 text-sm hover:bg-blue-500/30"
+                  >
+                    Submit
+                  </button>
+                </div>
+              </div>
+            </div>
+          )}
         </div>
       )
     },
@@ -151,7 +223,7 @@ const PortfolioWebsite = () => {
         </div>
       )
     }
-  ], [data]);
+  ], [data, rating, hoverRating, showRatingModal, ratingName, ratingEmail, ratingSubmitted]);
 
   const navPositions = useMemo(() => {
     const r = 95;
@@ -266,6 +338,19 @@ const PortfolioWebsite = () => {
 
     loadGSAP();
     return () => { if (window.ScrollTrigger) ScrollTrigger.getAll().forEach((t) => t.kill()); };
+  }, []);
+
+  // Smooth scroll on sidebar / mobile nav clicks
+  useEffect(() => {
+    const onClick = (e) => {
+      const a = e.target.closest('a[href^="#"]');
+      if (!a) return;
+      const id = a.getAttribute('href').slice(1);
+      const el = document.getElementById(id);
+      if (el) { e.preventDefault(); el.scrollIntoView({ behavior: 'smooth', block: 'start' }); }
+    };
+    document.addEventListener('click', onClick);
+    return () => document.removeEventListener('click', onClick);
   }, []);
 
   return (
