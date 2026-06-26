@@ -1,14 +1,14 @@
 import React, { useState, useEffect, useCallback } from 'react';
 
 const defaultRoles = [
-  'Full-Stack Developer & Hardware Enthusiast',
   'IoT & Embedded Systems Engineer',
+  'Full-Stack Developer & Hardware Enthusiast',
   'React & Node.js Developer',
   'Open Source Contributor',
   'Tech Innovator'
 ];
 
-export default function Typewriter({ words, typeSpeed, deleteSpeed, loop, showCursor, className, startDelay }) {
+export default function Typewriter({ words, typeSpeed, deleteSpeed, loop, showCursor, className, startDelay, onFirstDone }) {
   const roles = words || defaultRoles;
   const tSpeed = typeSpeed || 65;
   const dSpeed = deleteSpeed || 35;
@@ -20,6 +20,7 @@ export default function Typewriter({ words, typeSpeed, deleteSpeed, loop, showCu
   const [wordIdx, setWordIdx] = useState(0);
   const [charIdx, setCharIdx] = useState(0);
   const [deleting, setDeleting] = useState(false);
+  const [firstDone, setFirstDone] = useState(false);
 
   useEffect(() => {
     if (startDelay) {
@@ -34,6 +35,9 @@ export default function Typewriter({ words, typeSpeed, deleteSpeed, loop, showCu
       setText(current.slice(0, charIdx + 1));
       setCharIdx(c => c + 1);
       if (charIdx + 1 === current.length) {
+        if (!firstDone && wordIdx === 0) {
+          setFirstDone(true);
+        }
         if (shouldLoop) {
           setTimeout(() => setDeleting(true), 1500);
         }
@@ -48,7 +52,13 @@ export default function Typewriter({ words, typeSpeed, deleteSpeed, loop, showCu
         return;
       }
     }
-  }, [wordIdx, charIdx, deleting, roles, shouldLoop]);
+  }, [wordIdx, charIdx, deleting, roles, shouldLoop, firstDone]);
+
+  useEffect(() => {
+    if (firstDone && onFirstDone) {
+      onFirstDone();
+    }
+  }, [firstDone, onFirstDone]);
 
   useEffect(() => {
     if (!started) return;
