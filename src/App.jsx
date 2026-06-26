@@ -118,15 +118,15 @@ const PortfolioWebsite = () => {
       id: 'hero', side: 'right',
       content: (
         <div className="hero-section">
-          <p className="text-blue-400 font-mono text-sm mb-4 tracking-[0.2em] uppercase" style={{ opacity: heroPhase >= 1 ? 1 : 0, transform: heroPhase >= 1 ? 'translateY(0)' : 'translateY(30px)', transition: 'opacity 0.6s ease, transform 0.6s ease' }}>Hello ✌, I'm</p>
-          <h1 className="text-5xl md:text-6xl font-bold mb-4 bg-gradient-to-r from-blue-300 via-blue-400 to-cyan-400 bg-clip-text text-transparent min-h-[1.2em]" style={{ opacity: heroPhase >= 2 ? 1 : 0, transform: heroPhase >= 2 ? 'translateY(0)' : 'translateY(30px)', transition: 'opacity 0.6s ease, transform 0.6s ease' }}>
+          <p className="text-blue-400 font-mono text-xs sm:text-sm mb-4 tracking-[0.2em] uppercase" style={{ opacity: heroPhase >= 1 ? 1 : 0, transform: heroPhase >= 1 ? 'translateY(0)' : 'translateY(30px)', transition: 'opacity 0.6s ease, transform 0.6s ease' }}>Hello ✌, I'm</p>
+          <h1 className="text-4xl sm:text-5xl md:text-6xl font-bold mb-4 bg-gradient-to-r from-blue-300 via-blue-400 to-cyan-400 bg-clip-text text-transparent min-h-[1.2em]" style={{ opacity: heroPhase >= 2 ? 1 : 0, transform: heroPhase >= 2 ? 'translateY(0)' : 'translateY(30px)', transition: 'opacity 0.6s ease, transform 0.6s ease' }}>
             {heroPhase >= 2 && <Typewriter words={['Elisee']} loop={false} typeSpeed={80} showCursor={false} startDelay={200} onFirstDone={() => setNameDone(true)} />}
           </h1>
           <p className="text-lg md:text-xl text-blue-200/80 mb-6 font-light min-h-[1.5em]" style={{ opacity: heroPhase >= 3 ? 1 : 0, transform: heroPhase >= 3 ? 'translateY(0)' : 'translateY(30px)', transition: 'opacity 0.6s ease, transform 0.6s ease' }}>{heroPhase >= 3 && <Typewriter startDelay={200} onFirstDone={() => setSubtitleDone(true)} />}</p>
           <p className="text-gray-400 leading-relaxed mb-8 max-w-md" style={{ opacity: heroPhase >= 4 ? 1 : 0, transform: heroPhase >= 4 ? 'translateY(0)' : 'translateY(30px)', transition: 'opacity 0.6s ease, transform 0.6s ease' }}>I craft seamless digital experiences and bridge the gap between hardware and software through innovative solutions.</p>
-          <div className="flex gap-4" style={{ opacity: heroPhase >= 5 ? 1 : 0, transform: heroPhase >= 5 ? 'translateY(0)' : 'translateY(30px)', transition: 'opacity 0.6s ease, transform 0.6s ease' }}>
-            <a href="#about" className="px-6 py-3 bg-blue-500/20 border border-blue-400/50 rounded-lg hover:bg-blue-500/30 text-blue-300 font-medium text-sm">Explore My Work</a>
-            <a href="#contact" className="px-6 py-3 border border-white/10 rounded-lg hover:bg-white/5 text-gray-300 font-medium text-sm">Contact Me</a>
+          <div className="flex gap-3 sm:gap-4 flex-wrap" style={{ opacity: heroPhase >= 5 ? 1 : 0, transform: heroPhase >= 5 ? 'translateY(0)' : 'translateY(30px)', transition: 'opacity 0.6s ease, transform 0.6s ease' }}>
+            <a href="#about" className="px-5 sm:px-6 py-2.5 sm:py-3 bg-blue-500/20 border border-blue-400/50 rounded-lg hover:bg-blue-500/30 text-blue-300 font-medium text-xs sm:text-sm">Explore My Work</a>
+            <a href="#contact" className="px-5 sm:px-6 py-2.5 sm:py-3 border border-white/10 rounded-lg hover:bg-white/5 text-gray-300 font-medium text-xs sm:text-sm">Contact Me</a>
           </div>
         </div>
       )
@@ -386,7 +386,7 @@ const PortfolioWebsite = () => {
       {/* Loader overlay */}
       {loading && (
         <div className="fixed inset-0 z-[100] flex flex-col items-center justify-center bg-slate-950" style={{ transition: 'opacity 0.4s' }}>
-          <div className="w-64">
+          <div className="w-full max-w-xs mx-6">
             <div className="h-1 bg-slate-800 rounded-full overflow-hidden">
               <div className="h-full bg-gradient-to-r from-blue-500 to-cyan-400 rounded-full transition-all duration-300 ease-out" style={{ width: `${loadingProgress}%` }}></div>
             </div>
@@ -408,11 +408,11 @@ const PortfolioWebsite = () => {
       {/* ===== FIXED PHOTO ===== */}
       <div className="fixed inset-0 z-0 pointer-events-none">
         <div className="absolute inset-0">
-          <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[500px] h-[500px] bg-blue-500/8 rounded-full blur-[120px]"></div>
+          <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-72 sm:w-96 md:w-[500px] aspect-square bg-blue-500/8 rounded-full blur-[120px]"></div>
         </div>
         <div ref={photoRef} className="absolute top-1/2 will-change-transform" style={{ left: '75%', opacity: photoVisible ? 1 : 0, transition: 'opacity 0.8s ease' }}>
           <div className="absolute inset-0 rounded-full" style={{ opacity: photoVisible ? 0.3 : 0, transition: 'opacity 0.8s ease', boxShadow: '0 0 60px rgba(59,130,246,0.3), 0 0 120px rgba(59,130,246,0.15)', width: 'calc(100% + 16px)', height: 'calc(100% + 16px)', top: '-8px', left: '-8px' }}></div>
-          <div className="w-72 h-72 md:w-80 md:h-80 rounded-full overflow-hidden">
+          <div className="w-40 h-40 sm:w-56 sm:h-56 md:w-80 md:h-80 rounded-full overflow-hidden">
             <img src="/image.png" alt="Elisee" className="w-full h-full object-cover object-top brightness-110" />
           </div>
         </div>
@@ -448,7 +448,7 @@ const PortfolioWebsite = () => {
       ))}
 
       {/* ===== BOTTOM NAV (Mobile) ===== */}
-      <div className="fixed bottom-0 left-0 right-0 z-40 lg:hidden flex items-center justify-around bg-slate-950/90 backdrop-blur-md border-t border-white/10 px-2 py-1.5">
+      <div className="fixed bottom-0 left-0 right-0 z-40 lg:hidden flex items-center justify-around bg-slate-950/90 backdrop-blur-md border-t border-white/10 px-2 py-1.5 pb-[max(0.375rem,env(safe-area-inset-bottom))]">
         {navLinks.map((link) => (
           <a
             key={link.id}
@@ -470,7 +470,7 @@ const PortfolioWebsite = () => {
             key={sec.id}
             id={sec.id}
             ref={(el) => (sectionRefs.current[i] = el)}
-            className="min-h-screen flex items-center px-6 md:px-12 py-20 bg-slate-950/60"
+            className="min-h-screen flex items-center px-6 md:px-12 py-20 pb-28 lg:pb-20 bg-slate-950/60"
           >
             <div className={`w-full ${sec.side === 'right' ? 'lg:w-1/2 lg:pr-24' : 'lg:w-1/2 lg:pl-24 lg:ml-auto'}`}>
               <div className="max-w-lg">
