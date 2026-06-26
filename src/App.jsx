@@ -16,6 +16,15 @@ const navLinks = [
   { id: 'contact', label: 'Contact', icon: 'M3 8l7.89 5.26a2 2 0 002.22 0L21 8M5 19h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z' }
 ];
 
+const loaderSteps = [
+  { text: 'Initializing environment...', done: 15 },
+  { text: 'Connecting to database...', done: 30 },
+  { text: 'Fetching portfolio data...', done: 50 },
+  { text: 'Optimizing assets...', done: 70 },
+  { text: 'Rendering components...', done: 90 },
+  { text: 'Portfolio ready!', done: 100 }
+];
+
 const sectionMeta = [
   { id: 'hero', side: 'right' },
   { id: 'about', side: 'left' },
@@ -35,6 +44,26 @@ const PortfolioWebsite = () => {
   const [ratingName, setRatingName] = useState('');
   const [ratingEmail, setRatingEmail] = useState('');
   const [ratingSubmitted, setRatingSubmitted] = useState(false);
+  const [loading, setLoading] = useState(true);
+  const [loadingProgress, setLoadingProgress] = useState(0);
+  const [loadingStep, setLoadingStep] = useState(0);
+
+  useEffect(() => {
+    if (loadingStep >= loaderSteps.length) return;
+    const timer = setTimeout(() => {
+      setLoadingProgress(loaderSteps[loadingStep].done);
+      setLoadingStep((s) => s + 1);
+    }, 500);
+    return () => clearTimeout(timer);
+  }, [loadingStep]);
+
+  useEffect(() => {
+    if (loadingStep === loaderSteps.length) {
+      const timer = setTimeout(() => setLoading(false), 400);
+      return () => clearTimeout(timer);
+    }
+  }, [loadingStep]);
+
   const photoRef = useRef(null);
   const contentRef = useRef(null);
   const progressRef = useRef(null);
@@ -352,6 +381,24 @@ const PortfolioWebsite = () => {
     document.addEventListener('click', onClick);
     return () => document.removeEventListener('click', onClick);
   }, []);
+
+  if (loading) {
+    return (
+      <div className="fixed inset-0 z-[100] flex flex-col items-center justify-center bg-slate-950">
+        <div className="w-64">
+          <div className="h-1 bg-slate-800 rounded-full overflow-hidden">
+            <div className="h-full bg-gradient-to-r from-blue-500 to-cyan-400 rounded-full transition-all duration-300 ease-out" style={{ width: `${loadingProgress}%` }}></div>
+          </div>
+          <div className="mt-4 flex items-center gap-2">
+            <span className="w-2 h-2 rounded-full bg-blue-400 animate-pulse"></span>
+            <p className="text-sm text-gray-400 font-mono">
+              {loaderSteps[Math.min(loadingStep, loaderSteps.length - 1)]?.text}
+            </p>
+          </div>
+        </div>
+      </div>
+    );
+  }
 
   return (
     <div className="min-h-screen bg-slate-950 text-white overflow-x-hidden">
