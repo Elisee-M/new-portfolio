@@ -188,7 +188,6 @@ const PortfolioWebsite = () => {
           const sw = 1 / total;
           const cs = Math.min(Math.floor(p / sw), total - 1);
           const lp = (p - cs * sw) / sw;
-          const side = sections[cs]?.side || 'right';
 
           if (cs !== currentSection.current) {
             currentSection.current = cs;
@@ -282,18 +281,20 @@ const PortfolioWebsite = () => {
         </div>
       </div>
 
-      {/* ===== CIRCULAR NAV (Desktop - right side) ===== */}
-      <div className="fixed z-40 hidden lg:block" style={{ right: '15px', top: '50%', width: 0, height: 0 }}>
-        {navLinks.map((link, i) => {
-          const angle = 108 + i * 28.8;
+      {/* ===== CIRCULAR NAV (Desktop - right side, close to edge) ===== */}
+      {(() => {
+        const r = 170;
+        const centerRight = 190;
+        const centerY = typeof window !== 'undefined' ? window.innerHeight * 0.5 : 500;
+        return navLinks.map((link, i) => {
+          const angle = 215 - i * 14;
           const rad = angle * Math.PI / 180;
-          const r = 120;
-          const x = Math.cos(rad) * r;
-          const y = Math.sin(rad) * r;
+          const btnRight = centerRight + Math.cos(rad) * r - 16;
+          const btnTop = centerY + Math.sin(rad) * r - 16;
           return (
             <a key={link.id} href={`#${link.id}`}
-              className="sidebar-btn group absolute flex items-center justify-center w-8 h-8 rounded-full border border-white/15 text-blue-300 transition-all duration-300 ease-out hover:scale-110 hover:border-blue-400/50 hover:text-blue-200 active:scale-95 relative"
-              style={{ left: x, top: y, transform: 'translate(-50%, -50%)' }}
+              className="sidebar-btn group fixed z-40 hidden lg:flex items-center justify-center w-8 h-8 rounded-full border border-white/15 text-blue-300 transition-all duration-300 ease-out hover:scale-110 hover:border-blue-400/50 hover:text-blue-200 active:scale-95"
+              style={{ right: `${btnRight}px`, top: `${btnTop}px` }}
             >
               <svg className="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24" strokeWidth={2}>
                 <path strokeLinecap="round" strokeLinejoin="round" d={link.icon} />
@@ -303,8 +304,8 @@ const PortfolioWebsite = () => {
               </span>
             </a>
           );
-        })}
-      </div>
+        });
+      })()}
 
       {/* ===== BOTTOM NAV (Mobile) ===== */}
       <div className="fixed bottom-0 left-0 right-0 z-40 lg:hidden flex items-center justify-around bg-slate-950/90 backdrop-blur-md border-t border-white/10 px-2 py-1.5">
