@@ -47,6 +47,7 @@ const PortfolioWebsite = () => {
   const [loading, setLoading] = useState(true);
   const [loadingProgress, setLoadingProgress] = useState(0);
   const [loadingStep, setLoadingStep] = useState(0);
+  const [heroPhase, setHeroPhase] = useState(0);
 
   useEffect(() => {
     if (loadingStep >= loaderSteps.length) return;
@@ -63,6 +64,18 @@ const PortfolioWebsite = () => {
       return () => clearTimeout(timer);
     }
   }, [loadingStep]);
+
+  useEffect(() => {
+    if (loading) return;
+    const timers = [
+      setTimeout(() => setHeroPhase(1), 100),
+      setTimeout(() => setHeroPhase(2), 1000),
+      setTimeout(() => setHeroPhase(3), 2800),
+      setTimeout(() => setHeroPhase(4), 4000),
+      setTimeout(() => setHeroPhase(5), 4800)
+    ];
+    return () => timers.forEach(clearTimeout);
+  }, [loading]);
 
   const photoRef = useRef(null);
   const contentRef = useRef(null);
@@ -382,26 +395,25 @@ const PortfolioWebsite = () => {
     return () => document.removeEventListener('click', onClick);
   }, []);
 
-  if (loading) {
-    return (
-      <div className="fixed inset-0 z-[100] flex flex-col items-center justify-center bg-slate-950">
-        <div className="w-64">
-          <div className="h-1 bg-slate-800 rounded-full overflow-hidden">
-            <div className="h-full bg-gradient-to-r from-blue-500 to-cyan-400 rounded-full transition-all duration-300 ease-out" style={{ width: `${loadingProgress}%` }}></div>
-          </div>
-          <div className="mt-4 flex items-center gap-2">
-            <span className="w-2 h-2 rounded-full bg-blue-400 animate-pulse"></span>
-            <p className="text-sm text-gray-400 font-mono">
-              {loaderSteps[Math.min(loadingStep, loaderSteps.length - 1)]?.text}
-            </p>
-          </div>
-        </div>
-      </div>
-    );
-  }
-
   return (
     <div className="min-h-screen bg-slate-950 text-white overflow-x-hidden">
+      {/* Loader overlay */}
+      {loading && (
+        <div className="fixed inset-0 z-[100] flex flex-col items-center justify-center bg-slate-950" style={{ transition: 'opacity 0.4s' }}>
+          <div className="w-64">
+            <div className="h-1 bg-slate-800 rounded-full overflow-hidden">
+              <div className="h-full bg-gradient-to-r from-blue-500 to-cyan-400 rounded-full transition-all duration-300 ease-out" style={{ width: `${loadingProgress}%` }}></div>
+            </div>
+            <div className="mt-4 flex items-center gap-2">
+              <span className="w-2 h-2 rounded-full bg-blue-400 animate-pulse"></span>
+              <p className="text-sm text-gray-400 font-mono">
+                {loaderSteps[Math.min(loadingStep, loaderSteps.length - 1)]?.text}
+              </p>
+            </div>
+          </div>
+        </div>
+      )}
+
       {/* Progress bar */}
       <div className="fixed top-0 left-0 w-full h-0.5 z-50">
         <div ref={progressRef} className="h-full bg-gradient-to-r from-blue-500 to-cyan-400" style={{ width: '0%' }}></div>
