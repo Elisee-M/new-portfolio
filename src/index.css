@@ -66,7 +66,7 @@ code {
 }
 
 .photo-pop-in {
-  opacity: 0 !important;
+  opacity: 0;
   animation: pop-in 1s cubic-bezier(0.34, 1.56, 0.64, 1) 0.6s forwards,
              wiggle 0.8s ease-in-out 1.6s,
              float 4s ease-in-out 2.4s infinite;
