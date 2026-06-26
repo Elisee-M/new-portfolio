@@ -165,7 +165,7 @@ const PortfolioWebsite = () => {
   const currentSection = useRef(0);
   const navPositions = useMemo(() => {
     const r = 120;
-    const centerRight = 30;
+    const centerRight = 3;
     const centerY = typeof window !== 'undefined' ? window.innerHeight * 0.5 : 500;
     return navLinks.map((link, i) => {
       const angle = 290 + i * 28;
