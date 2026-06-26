@@ -12,7 +12,7 @@ export default function AdminPanel({ onClose }) {
   const [password, setPassword] = useState('');
   const [error, setError] = useState('');
   const [tab, setTab] = useState('projects');
-  const { data, resetData } = usePortfolioData();
+  const { resetData } = usePortfolioData();
 
   const handleLogin = (e) => {
     e.preventDefault();

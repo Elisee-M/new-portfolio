@@ -15,3 +15,40 @@ code {
   font-family: source-code-pro, Menlo, Monaco, Consolas, 'Courier New',
     monospace;
 }
+
+@keyframes float {
+  0%, 100% { transform: translate(-50%, -50%) translateY(0); }
+  50% { transform: translate(-50%, -50%) translateY(-10px); }
+}
+
+@keyframes glow-pulse {
+  0%, 100% { opacity: 0.3; transform: scale(1); }
+  50% { opacity: 0.6; transform: scale(1.05); }
+}
+
+@keyframes breathe {
+  0%, 100% { transform: scale(1); }
+  50% { transform: scale(1.02); }
+}
+
+.photo-float {
+  animation: float 4s ease-in-out infinite;
+}
+
+.photo-glow {
+  animation: glow-pulse 3s ease-in-out infinite;
+}
+
+.photo-img {
+  animation: breathe 4s ease-in-out infinite;
+}
+
+.photo-img:hover {
+  animation-play-state: paused;
+  transform: scale(1.05);
+  transition: transform 0.3s ease;
+}
+
+.photo-float:hover {
+  animation-play-state: paused;
+}
