@@ -5,28 +5,39 @@ import SkillsManager from './SkillsManager';
 import ExperienceManager from './ExperienceManager';
 import CertificationsManager from './CertificationsManager';
 
-const ADMIN_PASSWORD = 'admin123';
+const API_URL = process.env.REACT_APP_API_URL || 'http://localhost:5000/api';
 
 export default function AdminPanel({ onClose }) {
-  const [loggedIn, setLoggedIn] = useState(() => sessionStorage.getItem('portfolio_admin') === 'true');
+  const [loggedIn, setLoggedIn] = useState(() => !!sessionStorage.getItem('portfolio_token'));
+  const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [error, setError] = useState('');
   const [tab, setTab] = useState('projects');
   const { resetData } = usePortfolioData();
 
-  const handleLogin = (e) => {
+  const handleLogin = async (e) => {
     e.preventDefault();
-    if (password === ADMIN_PASSWORD) {
-      sessionStorage.setItem('portfolio_admin', 'true');
+    setError('');
+    try {
+      const res = await fetch(`${API_URL}/auth/login`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ email, password })
+      });
+      if (!res.ok) {
+        setError('Invalid email or password');
+        return;
+      }
+      const { token } = await res.json();
+      sessionStorage.setItem('portfolio_token', token);
       setLoggedIn(true);
-      setError('');
-    } else {
-      setError('Invalid password');
+    } catch {
+      setError('Could not connect to server');
     }
   };
 
   const handleLogout = () => {
-    sessionStorage.removeItem('portfolio_admin');
+    sessionStorage.removeItem('portfolio_token');
     setLoggedIn(false);
   };
 
@@ -39,12 +50,19 @@ export default function AdminPanel({ onClose }) {
             <p className="text-gray-400 text-sm mb-6">Enter password to manage portfolio content.</p>
             <form onSubmit={handleLogin}>
               <input
+                type="email"
+                value={email}
+                onChange={(e) => setEmail(e.target.value)}
+                placeholder="Email"
+                className="w-full px-4 py-3 bg-slate-800 border border-white/10 rounded-xl text-white placeholder-gray-500 mb-3 focus:outline-none focus:border-blue-500/50"
+                autoFocus
+              />
+              <input
                 type="password"
                 value={password}
                 onChange={(e) => setPassword(e.target.value)}
                 placeholder="Password"
                 className="w-full px-4 py-3 bg-slate-800 border border-white/10 rounded-xl text-white placeholder-gray-500 mb-3 focus:outline-none focus:border-blue-500/50"
-                autoFocus
               />
               {error && <p className="text-red-400 text-sm mb-3">{error}</p>}
               <div className="flex gap-3">

@@ -15,7 +15,7 @@ export default function ExperienceManager() {
   };
 
   const handleEdit = (exp) => {
-    setEditing(exp.id);
+    setEditing(exp._id || exp.id);
     setForm({ title: exp.title, org: exp.org, period: exp.period, desc: exp.desc });
   };
 
@@ -67,7 +67,7 @@ export default function ExperienceManager() {
       </div>
       <div className="space-y-3">
         {data.experiences.map(e => (
-          <div key={e.id} className="flex items-start gap-4 bg-slate-900/80 border border-white/10 rounded-xl p-4 hover:border-blue-500/30">
+          <div key={e._id || e.id} className="flex items-start gap-4 bg-slate-900/80 border border-white/10 rounded-xl p-4 hover:border-blue-500/30">
             <div className="flex-1 min-w-0">
               <p className="text-xs text-blue-400/60 mb-1 font-mono">{e.period}</p>
               <h4 className="text-blue-300 font-semibold">{e.title}</h4>
@@ -76,7 +76,7 @@ export default function ExperienceManager() {
             </div>
             <div className="flex gap-2 shrink-0">
               <button onClick={() => handleEdit(e)} className="px-3 py-1.5 text-sm border border-blue-400/30 text-blue-400 hover:bg-blue-500/10 rounded-lg transition-colors">Edit</button>
-              <button onClick={() => deleteExperience(e.id)} className="px-3 py-1.5 text-sm border border-red-400/30 text-red-400 hover:bg-red-500/10 rounded-lg transition-colors">Delete</button>
+              <button onClick={() => deleteExperience(e._id || e.id)} className="px-3 py-1.5 text-sm border border-red-400/30 text-red-400 hover:bg-red-500/10 rounded-lg transition-colors">Delete</button>
             </div>
           </div>
         ))}

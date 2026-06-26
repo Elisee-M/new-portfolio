@@ -192,7 +192,7 @@ const PortfolioWebsite = () => {
           </div>
           <div className="space-y-3">
             {data.projects.map((p, i) => (
-              <div key={p.id || i} className="card-in group backdrop-blur-2xl bg-slate-900/80 border border-white/10 rounded-xl p-5 hover:bg-blue-500/10 hover:border-blue-400/40 transition-all">
+              <div key={p._id || p.id || i} className="card-in group backdrop-blur-2xl bg-slate-900/80 border border-white/10 rounded-xl p-5 hover:bg-blue-500/10 hover:border-blue-400/40 transition-all">
                 {p.image && (
                   <img src={p.image} alt={p.title} className="w-full h-40 object-cover rounded-lg mb-3 border border-white/10" onError={e => { e.target.style.display = 'none' }} />
                 )}
@@ -300,7 +300,7 @@ const PortfolioWebsite = () => {
           <div className="timeline relative pl-8 border-l-2 border-blue-500/30">
             <div className="timeline-line absolute left-0 top-0 w-0.5 bg-gradient-to-b from-blue-500 to-cyan-500 origin-top"></div>
             {data.experiences.map((exp, i) => (
-              <div key={exp.id || i} className="timeline-item relative mb-8 last:mb-0">
+              <div key={exp._id || exp.id || i} className="timeline-item relative mb-8 last:mb-0">
                 <div className="absolute -left-[25px] top-1 w-3 h-3 rounded-full bg-blue-500 border-2 border-slate-950"></div>
                 <div className="backdrop-blur-2xl bg-slate-900/80 border border-white/10 rounded-xl p-4 hover:border-blue-500/30">
                   <p className="text-xs text-blue-400/60 mb-1 font-mono">{exp.period}</p>
@@ -546,7 +546,7 @@ const PortfolioWebsite = () => {
             </div>
             <div className="p-6 pt-4 grid gap-4 md:grid-cols-2">
               {data.projects.map((p, i) => (
-                <div key={p.id || i} className="backdrop-blur-2xl bg-slate-800/80 border border-white/10 rounded-xl p-5 hover:border-blue-400/40 transition-all">
+                <div key={p._id || p.id || i} className="backdrop-blur-2xl bg-slate-800/80 border border-white/10 rounded-xl p-5 hover:border-blue-400/40 transition-all">
                   {p.image && (
                     <img src={p.image} alt={p.title} className="w-full h-36 object-cover rounded-lg mb-3 border border-white/10" onError={e => { e.target.style.display = 'none' }} />
                   )}
@@ -592,7 +592,7 @@ const PortfolioWebsite = () => {
             </div>
             <div className="p-6 pt-4 space-y-3">
               {data.certifications.map((c, i) => (
-                <div key={c.id} className="backdrop-blur-2xl bg-slate-800/80 border border-white/10 rounded-xl p-5 hover:border-blue-400/40 transition-all">
+                <div key={c._id || c.id} className="backdrop-blur-2xl bg-slate-800/80 border border-white/10 rounded-xl p-5 hover:border-blue-400/40 transition-all">
                   <div className="flex items-start justify-between gap-4">
                     <div className="min-w-0">
                       <h4 className="text-base font-semibold text-blue-300 mb-1">{c.name}</h4>

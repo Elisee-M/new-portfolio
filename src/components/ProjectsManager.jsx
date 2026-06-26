@@ -1,12 +1,39 @@
-import React, { useState } from 'react';
+import React, { useState, useRef } from 'react';
 import { usePortfolioData } from '../data/portfolioData';
+
+const API_URL = process.env.REACT_APP_API_URL || 'http://localhost:5000/api';
 
 export default function ProjectsManager() {
   const { data, addProject, updateProject, deleteProject } = usePortfolioData();
   const [editing, setEditing] = useState(null);
   const [form, setForm] = useState({ title: '', desc: '', tech: '', image: '', demo: '', source: '' });
+  const [uploading, setUploading] = useState(false);
+  const fileRef = useRef(null);
 
   const resetForm = () => setForm({ title: '', desc: '', tech: '', image: '', demo: '', source: '' });
+
+  const handleUpload = async (e) => {
+    const file = e.target.files?.[0];
+    if (!file) return;
+    setUploading(true);
+    const fd = new FormData();
+    fd.append('image', file);
+    try {
+      const res = await fetch(`${API_URL}/upload`, {
+        method: 'POST',
+        headers: { 'Authorization': `Bearer ${sessionStorage.getItem('portfolio_token')}` },
+        body: fd
+      });
+      if (!res.ok) throw new Error('Upload failed');
+      const { url } = await res.json();
+      setForm(p => ({ ...p, image: url }));
+    } catch (err) {
+      alert('Failed to upload image');
+    } finally {
+      setUploading(false);
+      if (fileRef.current) fileRef.current.value = '';
+    }
+  };
 
   const handleAdd = () => {
     if (!form.title.trim()) return;
@@ -22,7 +49,7 @@ export default function ProjectsManager() {
   };
 
   const handleEdit = (project) => {
-    setEditing(project.id);
+    setEditing(project._id || project.id);
     setForm({
       title: project.title || '',
       desc: project.desc || '',
@@ -76,13 +103,30 @@ export default function ProjectsManager() {
               onChange={e => setForm(p => ({ ...p, tech: e.target.value }))}
               className="flex-1 min-w-[200px] px-4 py-2.5 bg-slate-800 border border-white/10 rounded-xl text-white placeholder-gray-500 focus:outline-none focus:border-blue-500/50"
             />
-            <input
-              type="text"
-              placeholder="Image URL (optional)"
-              value={form.image}
-              onChange={e => setForm(p => ({ ...p, image: e.target.value }))}
-              className="flex-1 min-w-[200px] px-4 py-2.5 bg-slate-800 border border-white/10 rounded-xl text-white placeholder-gray-500 focus:outline-none focus:border-blue-500/50"
-            />
+            <div className="flex-1 min-w-[200px] flex gap-2">
+              <input
+                type="text"
+                placeholder="Image URL (optional)"
+                value={form.image}
+                onChange={e => setForm(p => ({ ...p, image: e.target.value }))}
+                className="flex-1 px-4 py-2.5 bg-slate-800 border border-white/10 rounded-xl text-white placeholder-gray-500 focus:outline-none focus:border-blue-500/50"
+              />
+              <input
+                ref={fileRef}
+                type="file"
+                accept="image/*"
+                onChange={handleUpload}
+                className="hidden"
+              />
+              <button
+                type="button"
+                onClick={() => fileRef.current?.click()}
+                disabled={uploading}
+                className="px-3 py-2.5 bg-slate-700 border border-white/10 text-gray-300 rounded-xl text-sm hover:bg-slate-600 transition-colors disabled:opacity-50 whitespace-nowrap"
+              >
+                {uploading ? 'Uploading...' : 'Upload'}
+              </button>
+            </div>
           </div>
           <div className="flex flex-wrap gap-3">
             <input
@@ -114,7 +158,7 @@ export default function ProjectsManager() {
       </div>
       <div className="space-y-3">
         {data.projects.map(p => (
-          <div key={p.id} className="flex items-start gap-4 bg-slate-900/80 border border-white/10 rounded-xl p-4 hover:border-blue-500/30">
+          <div key={p._id || p.id} className="flex items-start gap-4 bg-slate-900/80 border border-white/10 rounded-xl p-4 hover:border-blue-500/30">
             {p.image && (
               <img
                 src={p.image}
@@ -152,7 +196,7 @@ export default function ProjectsManager() {
             </div>
             <div className="flex gap-2 shrink-0">
               <button onClick={() => handleEdit(p)} className="px-3 py-1.5 text-sm border border-blue-400/30 text-blue-400 hover:bg-blue-500/10 rounded-lg transition-colors">Edit</button>
-              <button onClick={() => deleteProject(p.id)} className="px-3 py-1.5 text-sm border border-red-400/30 text-red-400 hover:bg-red-500/10 rounded-lg transition-colors">Delete</button>
+              <button onClick={() => deleteProject(p._id || p.id)} className="px-3 py-1.5 text-sm border border-red-400/30 text-red-400 hover:bg-red-500/10 rounded-lg transition-colors">Delete</button>
             </div>
           </div>
         ))}

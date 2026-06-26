@@ -1,102 +1,107 @@
 import React, { createContext, useContext, useState, useEffect, useCallback } from 'react';
 
-const STORAGE_KEY = 'portfolio_data';
+const API_URL = process.env.REACT_APP_API_URL || 'http://localhost:5000/api';
 
-const defaultData = {
-  projects: [
-    { id: 1, title: "Arduino Smart Weight Scale", desc: "HX711 load cell amplifier with LCD display, real-time calibration.", tech: "Arduino, C++, HX711", image: "", demo: "", source: "" },
-    { id: 2, title: "Keypad-Controlled Servo Gate", desc: "4x4 matrix keypad interface with servo actuator for gate control.", tech: "Arduino, Servo, Matrix", image: "", demo: "", source: "" },
-    { id: 3, title: "IoT Sensor Network", desc: "Multi-sensor data collection with wireless transmission and cloud dashboard.", tech: "ESP32, MQTT, Node.js", image: "", demo: "", source: "" },
-    { id: 4, title: "Smart Home Dashboard", desc: "Real-time monitoring and control interface for connected home devices.", tech: "React, WebSockets, Chart.js", image: "", demo: "", source: "" }
-  ],
-  experiences: [
-    { id: 1, title: "Full-Stack Developer", org: "Freelance", period: "2023 - Present", desc: "Building scalable web applications and embedded systems solutions." },
-    { id: 2, title: "Hardware Engineer", org: "Tech Innovations Lab", period: "2022 - 2023", desc: "Designed and prototyped IoT devices, optimized sensor integration." },
-    { id: 3, title: "Junior Developer", org: "Digital Solutions Inc.", period: "2021 - 2022", desc: "Developed responsive web applications and contributed to APIs." }
-  ],
-  skills: [
-    { cat: "Frontend", items: ["React", "JavaScript", "TypeScript", "GSAP", "Tailwind CSS"] },
-    { cat: "Backend", items: ["Node.js", "Python", "REST APIs", "MongoDB", "PostgreSQL"] },
-    { cat: "Hardware", items: ["Arduino", "IoT Systems", "PCB Design", "Sensors & ADC"] },
-    { cat: "Tools", items: ["Git", "Docker", "Linux", "Figma", "VS Code"] }
-  ],
-  certifications: [
-    { id: 1, name: "AWS Certified Developer", date: "2024", credentialUrl: "https://aws.amazon.com/certification/" },
-    { id: 2, name: "Google IT Support", date: "2023", credentialUrl: "https://www.coursera.org/professional-certificates/google-it-support" },
-    { id: 3, name: "Meta Front-End Developer", date: "2023", credentialUrl: "https://www.coursera.org/professional-certificates/meta-front-end-developer" }
-  ]
-};
-
-function migrateCert(cert) {
-  if (cert.name) return cert;
-  return { id: cert.id, name: cert.title || "", date: cert.date || "", credentialUrl: "" };
+function getToken() {
+  return sessionStorage.getItem('portfolio_token');
 }
 
-function migrateProject(proj) {
-  return { image: "", demo: "", source: "", ...proj };
+function headers(extra = {}) {
+  const h = { 'Content-Type': 'application/json', ...extra };
+  const t = getToken();
+  if (t) h['Authorization'] = `Bearer ${t}`;
+  return h;
 }
 
-function loadData() {
-  try {
-    const raw = localStorage.getItem(STORAGE_KEY);
-    if (raw) {
-      const parsed = JSON.parse(raw);
-      const migrated = { ...defaultData };
-      if (parsed.projects) migrated.projects = parsed.projects.map(migrateProject);
-      if (parsed.certifications) migrated.certifications = parsed.certifications.map(migrateCert);
-      if (parsed.experiences) migrated.experiences = parsed.experiences;
-      if (parsed.skills) migrated.skills = parsed.skills;
-      return migrated;
-    }
-  } catch (e) {
-    console.warn('Failed to load portfolio data from localStorage:', e);
-  }
-  return JSON.parse(JSON.stringify(defaultData));
-}
+const defaultProjects = [
+  { title: "Arduino Smart Weight Scale", desc: "HX711 load cell amplifier with LCD display, real-time calibration.", tech: "Arduino, C++, HX711", image: "", demo: "", source: "" },
+  { title: "Keypad-Controlled Servo Gate", desc: "4x4 matrix keypad interface with servo actuator for gate control.", tech: "Arduino, Servo, Matrix", image: "", demo: "", source: "" },
+  { title: "IoT Sensor Network", desc: "Multi-sensor data collection with wireless transmission and cloud dashboard.", tech: "ESP32, MQTT, Node.js", image: "", demo: "", source: "" },
+  { title: "Smart Home Dashboard", desc: "Real-time monitoring and control interface for connected home devices.", tech: "React, WebSockets, Chart.js", image: "", demo: "", source: "" }
+];
 
-function saveData(data) {
-  try {
-    localStorage.setItem(STORAGE_KEY, JSON.stringify(data));
-  } catch (e) {
-    console.warn('Failed to save portfolio data:', e);
-  }
-}
+const defaultExperiences = [
+  { title: "Full-Stack Developer", org: "Freelance", period: "2023 - Present", desc: "Building scalable web applications and embedded systems solutions." },
+  { title: "Hardware Engineer", org: "Tech Innovations Lab", period: "2022 - 2023", desc: "Designed and prototyped IoT devices, optimized sensor integration." },
+  { title: "Junior Developer", org: "Digital Solutions Inc.", period: "2021 - 2022", desc: "Developed responsive web applications and contributed to APIs." }
+];
+
+const defaultSkills = [
+  { cat: "Frontend", items: ["React", "JavaScript", "TypeScript", "GSAP", "Tailwind CSS"] },
+  { cat: "Backend", items: ["Node.js", "Python", "REST APIs", "MongoDB", "PostgreSQL"] },
+  { cat: "Hardware", items: ["Arduino", "IoT Systems", "PCB Design", "Sensors & ADC"] },
+  { cat: "Tools", items: ["Git", "Docker", "Linux", "Figma", "VS Code"] }
+];
+
+const defaultCertifications = [
+  { name: "AWS Certified Developer", date: "2024", credentialUrl: "https://aws.amazon.com/certification/" },
+  { name: "Google IT Support", date: "2023", credentialUrl: "https://www.coursera.org/professional-certificates/google-it-support" },
+  { name: "Meta Front-End Developer", date: "2023", credentialUrl: "https://www.coursera.org/professional-certificates/meta-front-end-developer" }
+];
 
 const PortfolioDataContext = createContext(null);
 
 export function PortfolioDataProvider({ children }) {
-  const [data, setData] = useState(() => loadData());
+  const [data, setData] = useState({ projects: [], experiences: [], skills: [], certifications: [] });
+  const [apiReady, setApiReady] = useState(false);
 
   useEffect(() => {
-    saveData(data);
-  }, [data]);
-
-  const resetData = useCallback(() => {
-    setData(JSON.parse(JSON.stringify(defaultData)));
+    async function load() {
+      try {
+        const [projects, certs, exps, skills] = await Promise.all([
+          fetch(`${API_URL}/projects`).then(r => r.json()),
+          fetch(`${API_URL}/certifications`).then(r => r.json()),
+          fetch(`${API_URL}/experiences`).then(r => r.json()),
+          fetch(`${API_URL}/skills`).then(r => r.json()),
+        ]);
+        setData({
+          projects: Array.isArray(projects) ? projects : [],
+          certifications: Array.isArray(certs) ? certs : [],
+          experiences: Array.isArray(exps) ? exps : [],
+          skills: Array.isArray(skills) ? skills : []
+        });
+      } catch (e) {
+        console.warn('API unavailable:', e);
+      } finally {
+        setApiReady(true);
+      }
+    }
+    load();
   }, []);
 
   const updateProjects = useCallback((projects) => {
     setData(prev => ({ ...prev, projects }));
   }, []);
 
-  const addProject = useCallback((project) => {
+  const addProject = useCallback(async (project) => {
+    const res = await fetch(`${API_URL}/projects`, {
+      method: 'POST', headers: headers(), body: JSON.stringify(project)
+    });
+    if (!res.ok) return;
+    const saved = await res.json();
+    setData(prev => ({ ...prev, projects: [...prev.projects, saved] }));
+  }, []);
+
+  const updateProject = useCallback(async (id, updates) => {
+    const res = await fetch(`${API_URL}/projects/${id}`, {
+      method: 'PUT', headers: headers(), body: JSON.stringify(updates)
+    });
+    if (!res.ok) return;
+    const saved = await res.json();
     setData(prev => ({
       ...prev,
-      projects: [...prev.projects, { ...project, id: Date.now() }]
+      projects: prev.projects.map(p => p._id === id || p.id === id ? saved : p)
     }));
   }, []);
 
-  const updateProject = useCallback((id, updates) => {
+  const deleteProject = useCallback(async (id) => {
+    const res = await fetch(`${API_URL}/projects/${id}`, {
+      method: 'DELETE', headers: headers()
+    });
+    if (!res.ok) return;
     setData(prev => ({
       ...prev,
-      projects: prev.projects.map(p => p.id === id ? { ...p, ...updates } : p)
-    }));
-  }, []);
-
-  const deleteProject = useCallback((id) => {
-    setData(prev => ({
-      ...prev,
-      projects: prev.projects.filter(p => p.id !== id)
+      projects: prev.projects.filter(p => p._id !== id && p.id !== id)
     }));
   }, []);
 
@@ -104,24 +109,35 @@ export function PortfolioDataProvider({ children }) {
     setData(prev => ({ ...prev, experiences }));
   }, []);
 
-  const addExperience = useCallback((exp) => {
+  const addExperience = useCallback(async (exp) => {
+    const res = await fetch(`${API_URL}/experiences`, {
+      method: 'POST', headers: headers(), body: JSON.stringify(exp)
+    });
+    if (!res.ok) return;
+    const saved = await res.json();
+    setData(prev => ({ ...prev, experiences: [...prev.experiences, saved] }));
+  }, []);
+
+  const updateExperience = useCallback(async (id, updates) => {
+    const res = await fetch(`${API_URL}/experiences/${id}`, {
+      method: 'PUT', headers: headers(), body: JSON.stringify(updates)
+    });
+    if (!res.ok) return;
+    const saved = await res.json();
     setData(prev => ({
       ...prev,
-      experiences: [...prev.experiences, { ...exp, id: Date.now() }]
+      experiences: prev.experiences.map(e => e._id === id || e.id === id ? saved : e)
     }));
   }, []);
 
-  const updateExperience = useCallback((id, updates) => {
+  const deleteExperience = useCallback(async (id) => {
+    const res = await fetch(`${API_URL}/experiences/${id}`, {
+      method: 'DELETE', headers: headers()
+    });
+    if (!res.ok) return;
     setData(prev => ({
       ...prev,
-      experiences: prev.experiences.map(e => e.id === id ? { ...e, ...updates } : e)
-    }));
-  }, []);
-
-  const deleteExperience = useCallback((id) => {
-    setData(prev => ({
-      ...prev,
-      experiences: prev.experiences.filter(e => e.id !== id)
+      experiences: prev.experiences.filter(e => e._id !== id && e.id !== id)
     }));
   }, []);
 
@@ -129,54 +145,107 @@ export function PortfolioDataProvider({ children }) {
     setData(prev => ({ ...prev, skills }));
   }, []);
 
-  const addSkillCategory = useCallback((category) => {
-    setData(prev => ({
-      ...prev,
-      skills: [...prev.skills, { cat: category, items: [] }]
-    }));
+  const addSkillCategory = useCallback(async (category) => {
+    const res = await fetch(`${API_URL}/skills`, {
+      method: 'POST', headers: headers(), body: JSON.stringify({ cat: category, items: [] })
+    });
+    if (!res.ok) return;
+    const saved = await res.json();
+    setData(prev => ({ ...prev, skills: [...prev.skills, saved] }));
   }, []);
 
-  const updateSkillCategory = useCallback((index, updates) => {
+  const updateSkillCategory = useCallback(async (index, updates) => {
+    const skill = data.skills[index];
+    const id = skill._id;
+    const res = await fetch(`${API_URL}/skills/${id}`, {
+      method: 'PUT', headers: headers(), body: JSON.stringify(updates)
+    });
+    if (!res.ok) return;
+    const saved = await res.json();
     setData(prev => ({
       ...prev,
-      skills: prev.skills.map((s, i) => i === index ? { ...s, ...updates } : s)
+      skills: prev.skills.map((s, i) => i === index ? saved : s)
     }));
-  }, []);
+  }, [data.skills]);
 
-  const deleteSkillCategory = useCallback((index) => {
+  const deleteSkillCategory = useCallback(async (index) => {
+    const skill = data.skills[index];
+    const id = skill._id;
+    const res = await fetch(`${API_URL}/skills/${id}`, {
+      method: 'DELETE', headers: headers()
+    });
+    if (!res.ok) return;
     setData(prev => ({
       ...prev,
       skills: prev.skills.filter((_, i) => i !== index)
     }));
-  }, []);
+  }, [data.skills]);
 
   const updateCertifications = useCallback((certifications) => {
     setData(prev => ({ ...prev, certifications }));
   }, []);
 
-  const addCertification = useCallback((cert) => {
+  const addCertification = useCallback(async (cert) => {
+    const res = await fetch(`${API_URL}/certifications`, {
+      method: 'POST', headers: headers(), body: JSON.stringify(cert)
+    });
+    if (!res.ok) return;
+    const saved = await res.json();
+    setData(prev => ({ ...prev, certifications: [...prev.certifications, saved] }));
+  }, []);
+
+  const updateCertification = useCallback(async (id, updates) => {
+    const res = await fetch(`${API_URL}/certifications/${id}`, {
+      method: 'PUT', headers: headers(), body: JSON.stringify(updates)
+    });
+    if (!res.ok) return;
+    const saved = await res.json();
     setData(prev => ({
       ...prev,
-      certifications: [...prev.certifications, { ...cert, id: Date.now() }]
+      certifications: prev.certifications.map(c => c._id === id || c.id === id ? saved : c)
     }));
   }, []);
 
-  const updateCertification = useCallback((id, updates) => {
+  const deleteCertification = useCallback(async (id) => {
+    const res = await fetch(`${API_URL}/certifications/${id}`, {
+      method: 'DELETE', headers: headers()
+    });
+    if (!res.ok) return;
     setData(prev => ({
       ...prev,
-      certifications: prev.certifications.map(c => c.id === id ? { ...c, ...updates } : c)
+      certifications: prev.certifications.filter(c => c._id !== id && c.id !== id)
     }));
   }, []);
 
-  const deleteCertification = useCallback((id) => {
-    setData(prev => ({
-      ...prev,
-      certifications: prev.certifications.filter(c => c.id !== id)
-    }));
+  const resetData = useCallback(async () => {
+    const token = getToken();
+    if (!token) return;
+
+    const delAll = async (url) => {
+      const items = await fetch(url).then(r => r.json());
+      for (const item of items) {
+        await fetch(`${url}/${item._id}`, { method: 'DELETE', headers: headers() });
+      }
+    };
+
+    await delAll(`${API_URL}/projects`);
+    await delAll(`${API_URL}/experiences`);
+    await delAll(`${API_URL}/skills`);
+    await delAll(`${API_URL}/certifications`);
+
+    const [projects, exps, skills, certs] = await Promise.all([
+      Promise.all(defaultProjects.map(p => fetch(`${API_URL}/projects`, { method: 'POST', headers: headers(), body: JSON.stringify(p) }).then(r => r.json()))),
+      Promise.all(defaultExperiences.map(e => fetch(`${API_URL}/experiences`, { method: 'POST', headers: headers(), body: JSON.stringify(e) }).then(r => r.json()))),
+      Promise.all(defaultSkills.map(s => fetch(`${API_URL}/skills`, { method: 'POST', headers: headers(), body: JSON.stringify(s) }).then(r => r.json()))),
+      Promise.all(defaultCertifications.map(c => fetch(`${API_URL}/certifications`, { method: 'POST', headers: headers(), body: JSON.stringify(c) }).then(r => r.json()))),
+    ]);
+
+    setData({ projects, experiences: exps, skills, certifications: certs });
   }, []);
 
   const value = {
     data,
+    apiReady,
     resetData,
     updateProjects, addProject, updateProject, deleteProject,
     updateExperiences, addExperience, updateExperience, deleteExperience,
@@ -196,5 +265,3 @@ export function usePortfolioData() {
   if (!ctx) throw new Error('usePortfolioData must be used within PortfolioDataProvider');
   return ctx;
 }
-
-export { defaultData };

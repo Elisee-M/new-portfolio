@@ -15,7 +15,7 @@ export default function CertificationsManager() {
   };
 
   const handleEdit = (cert) => {
-    setEditing(cert.id);
+    setEditing(cert._id || cert.id);
     setForm({
       name: cert.name || '',
       date: cert.date || '',
@@ -81,7 +81,7 @@ export default function CertificationsManager() {
       </div>
       <div className="space-y-3">
         {data.certifications.map(c => (
-          <div key={c.id} className="flex items-start gap-4 bg-slate-900/80 border border-white/10 rounded-xl p-4 hover:border-blue-500/30">
+          <div key={c._id || c.id} className="flex items-start gap-4 bg-slate-900/80 border border-white/10 rounded-xl p-4 hover:border-blue-500/30">
             <div className="flex-1 min-w-0">
               <h4 className="text-blue-300 font-semibold">{c.name}</h4>
               <div className="flex items-center gap-2 mt-1">
@@ -98,7 +98,7 @@ export default function CertificationsManager() {
             </div>
             <div className="flex gap-2 shrink-0">
               <button onClick={() => handleEdit(c)} className="px-3 py-1.5 text-sm border border-blue-400/30 text-blue-400 hover:bg-blue-500/10 rounded-lg transition-colors">Edit</button>
-              <button onClick={() => deleteCertification(c.id)} className="px-3 py-1.5 text-sm border border-red-400/30 text-red-400 hover:bg-red-500/10 rounded-lg transition-colors">Delete</button>
+              <button onClick={() => deleteCertification(c._id || c.id)} className="px-3 py-1.5 text-sm border border-red-400/30 text-red-400 hover:bg-red-500/10 rounded-lg transition-colors">Delete</button>
             </div>
           </div>
         ))}
