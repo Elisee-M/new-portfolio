@@ -345,14 +345,21 @@ const PortfolioWebsite = () => {
       if (isMobile) {
         const photoInner = photo.querySelector('.rounded-full.overflow-hidden');
         const photoGlow = photo.querySelector('.rounded-full.absolute');
+
+        const vw = window.innerWidth;
+        const vh = window.innerHeight;
+
         gsap.set(photo, { xPercent: -50, yPercent: 0, left: '50%', top: '70%' });
 
+        const rect = photoInner.getBoundingClientRect();
+        const coverScale = Math.max(vw / rect.width, vh / rect.height) * 1.05;
+
         const tl = gsap.timeline({
-          scrollTrigger: { trigger: content, start: 'top top', end: 'top 35%', scrub: 1 }
+          scrollTrigger: { trigger: content, start: 'top top', end: '+=1000', scrub: 1.5 }
         });
-        tl.to(photo, { top: '50%', yPercent: -50, ease: 'none' }, 0);
-        tl.to(photoInner, { borderRadius: '0%', scale: 6, ease: 'none' }, 0);
-        tl.to(photoGlow, { opacity: 0, ease: 'none' }, 0);
+        tl.to(photo, { top: '50%', yPercent: -50, ease: 'power2.inOut' }, 0);
+        tl.to(photoInner, { borderRadius: '0%', scale: coverScale, ease: 'power2.inOut' }, 0);
+        tl.to(photoGlow, { opacity: 0, ease: 'power2.inOut' }, 0);
 
         ScrollTrigger.create({
           trigger: content,
