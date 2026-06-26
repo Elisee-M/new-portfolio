@@ -268,61 +268,6 @@ const PortfolioWebsite = () => {
     return () => { if (window.ScrollTrigger) ScrollTrigger.getAll().forEach((t) => t.kill()); };
   }, []);
 
-  // Smooth scroll on any anchor link click
-  useEffect(() => {
-    const onClick = (e) => {
-      const a = e.target.closest('a[href^="#"]');
-      if (!a) return;
-      const id = a.getAttribute('href').slice(1);
-      const el = document.getElementById(id);
-      if (el) { e.preventDefault(); el.scrollIntoView({ behavior: 'smooth', block: 'start' }); }
-    };
-    document.addEventListener('click', onClick);
-    return () => document.removeEventListener('click', onClick);
-  }, []);
-
-  // Scroll momentum — smooth out wheel scroll with deceleration
-  useEffect(() => {
-    let velocity = 0;
-    let rafId = null;
-    let coastTimer = null;
-
-    const onWheel = (e) => {
-      e.preventDefault();
-      velocity += e.deltaY * 0.2;
-      velocity = Math.max(Math.min(velocity, 60), -60);
-
-      clearTimeout(coastTimer);
-      if (rafId) { cancelAnimationFrame(rafId); rafId = null; }
-
-      const max = Math.max(0, document.documentElement.scrollHeight - window.innerHeight);
-      window.scrollTo(0, Math.max(0, Math.min(window.scrollY + velocity, max)));
-
-      coastTimer = setTimeout(() => {
-        const coast = () => {
-          velocity *= 0.9;
-          if (Math.abs(velocity) > 0.5) {
-            const max2 = Math.max(0, document.documentElement.scrollHeight - window.innerHeight);
-            window.scrollTo(0, Math.max(0, Math.min(window.scrollY + velocity, max2)));
-            rafId = requestAnimationFrame(coast);
-          } else { velocity = 0; rafId = null; }
-        };
-        rafId = requestAnimationFrame(coast);
-      }, 100);
-    };
-
-    const onKeyScroll = () => { if (rafId) { cancelAnimationFrame(rafId); rafId = null; velocity = 0; } };
-
-    window.addEventListener('wheel', onWheel, { passive: false });
-    window.addEventListener('keydown', onKeyScroll);
-    return () => {
-      window.removeEventListener('wheel', onWheel);
-      window.removeEventListener('keydown', onKeyScroll);
-      cancelAnimationFrame(rafId);
-      clearTimeout(coastTimer);
-    };
-  }, []);
-
   return (
     <div className="min-h-screen bg-slate-950 text-white overflow-x-hidden">
       {/* Progress bar */}
@@ -335,8 +280,8 @@ const PortfolioWebsite = () => {
         <div className="absolute inset-0">
           <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[500px] h-[500px] bg-blue-500/8 rounded-full blur-[120px]"></div>
         </div>
-        <div ref={photoRef} className="absolute top-1/2 will-change-transform photo-pop-in" style={{ left: '75%', transform: 'translate(-50%, -50%)', opacity: 0 }}>
-          <div className="absolute inset-0 rounded-full photo-pop-in-glow" style={{ opacity: 0, boxShadow: '0 0 60px rgba(59,130,246,0.3), 0 0 120px rgba(59,130,246,0.15)', width: 'calc(100% + 16px)', height: 'calc(100% + 16px)', top: '-8px', left: '-8px' }}></div>
+        <div ref={photoRef} className="absolute top-1/2 will-change-transform photo-pop-in" style={{ left: '75%', transform: 'translate(-50%, -50%)' }}>
+          <div className="absolute inset-0 rounded-full photo-pop-in-glow" style={{ boxShadow: '0 0 60px rgba(59,130,246,0.3), 0 0 120px rgba(59,130,246,0.15)', width: 'calc(100% + 16px)', height: 'calc(100% + 16px)', top: '-8px', left: '-8px' }}></div>
           <img src="/image.png" alt="Elisee" className="w-64 h-64 md:w-72 md:h-72 rounded-full object-cover brightness-110 photo-img" style={{ backfaceVisibility: 'hidden' }} />
         </div>
       </div>
