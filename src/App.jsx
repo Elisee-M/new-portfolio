@@ -48,6 +48,10 @@ const PortfolioWebsite = () => {
   const [loadingProgress, setLoadingProgress] = useState(0);
   const [loadingStep, setLoadingStep] = useState(0);
   const [heroPhase, setHeroPhase] = useState(0);
+  const [nameDone, setNameDone] = useState(false);
+  const [subtitleDone, setSubtitleDone] = useState(false);
+  const [sidebarKey, setSidebarKey] = useState(0);
+  const [photoVisible, setPhotoVisible] = useState(false);
 
   useEffect(() => {
     if (loadingStep >= loaderSteps.length) return;
@@ -65,17 +69,41 @@ const PortfolioWebsite = () => {
     }
   }, [loadingStep]);
 
+  // Hero entrance sequence
   useEffect(() => {
     if (loading) return;
-    const timers = [
-      setTimeout(() => setHeroPhase(1), 100),
-      setTimeout(() => setHeroPhase(2), 1000),
-      setTimeout(() => setHeroPhase(3), 2800),
-      setTimeout(() => setHeroPhase(4), 4000),
-      setTimeout(() => setHeroPhase(5), 4800)
-    ];
-    return () => timers.forEach(clearTimeout);
+    setHeroPhase(1); // show Hello
   }, [loading]);
+
+  useEffect(() => {
+    if (heroPhase !== 1) return;
+    const t = setTimeout(() => { setHeroPhase(2); setPhotoVisible(true); }, 500); // show name + photo
+    return () => clearTimeout(t);
+  }, [heroPhase]);
+
+  useEffect(() => {
+    if (heroPhase !== 2 || !nameDone) return;
+    const t = setTimeout(() => setHeroPhase(3), 1000); // after name done + 1s, show subtitle
+    return () => clearTimeout(t);
+  }, [heroPhase, nameDone]);
+
+  useEffect(() => {
+    if (heroPhase !== 3 || !subtitleDone) return;
+    const t = setTimeout(() => setHeroPhase(4), 500); // after subtitle done + 0.5s, show desc
+    return () => clearTimeout(t);
+  }, [heroPhase, subtitleDone]);
+
+  useEffect(() => {
+    if (heroPhase !== 4) return;
+    const t = setTimeout(() => setHeroPhase(5), 1000); // 1s later, show buttons
+    return () => clearTimeout(t);
+  }, [heroPhase]);
+
+  useEffect(() => {
+    if (heroPhase !== 5) return;
+    const t = setTimeout(() => setSidebarKey((k) => k + 1), 500); // 0.5s after buttons, animate sidebar
+    return () => clearTimeout(t);
+  }, [heroPhase]);
 
   const photoRef = useRef(null);
   const contentRef = useRef(null);
@@ -88,13 +116,13 @@ const PortfolioWebsite = () => {
       id: 'hero', side: 'right',
       content: (
         <div className="hero-section">
-          <p className="hero-line hero-hello text-blue-400 font-mono text-sm mb-4 tracking-[0.2em] uppercase" style={{ opacity: heroPhase >= 1 ? 1 : 0, transform: heroPhase >= 1 ? 'translateY(0)' : 'translateY(30px)', transition: 'opacity 0.6s ease, transform 0.6s ease' }}>Hello ✌, I'm</p>
+          <p className="text-blue-400 font-mono text-sm mb-4 tracking-[0.2em] uppercase" style={{ opacity: heroPhase >= 1 ? 1 : 0, transform: heroPhase >= 1 ? 'translateY(0)' : 'translateY(30px)', transition: 'opacity 0.6s ease, transform 0.6s ease' }}>Hello ✌, I'm</p>
           <h1 className="text-5xl md:text-6xl font-bold mb-4 bg-gradient-to-r from-blue-300 via-blue-400 to-cyan-400 bg-clip-text text-transparent min-h-[1.2em]" style={{ opacity: heroPhase >= 2 ? 1 : 0, transform: heroPhase >= 2 ? 'translateY(0)' : 'translateY(30px)', transition: 'opacity 0.6s ease, transform 0.6s ease' }}>
-            {heroPhase >= 2 && <Typewriter words={['Elisee']} loop={false} typeSpeed={80} showCursor={false} startDelay={300} />}
+            {heroPhase >= 2 && <Typewriter words={['Elisee']} loop={false} typeSpeed={80} showCursor={false} startDelay={200} onFirstDone={() => setNameDone(true)} />}
           </h1>
-          <p className="text-lg md:text-xl text-blue-200/80 mb-6 font-light min-h-[1.5em]" style={{ opacity: heroPhase >= 3 ? 1 : 0, transform: heroPhase >= 3 ? 'translateY(0)' : 'translateY(30px)', transition: 'opacity 0.6s ease, transform 0.6s ease' }}>{heroPhase >= 3 && <Typewriter startDelay={400} />}</p>
-          <p className="hero-line hero-desc text-gray-400 leading-relaxed mb-8 max-w-md" style={{ opacity: heroPhase >= 4 ? 1 : 0, transform: heroPhase >= 4 ? 'translateY(0)' : 'translateY(30px)', transition: 'opacity 0.6s ease, transform 0.6s ease' }}>I craft seamless digital experiences and bridge the gap between hardware and software through innovative solutions.</p>
-          <div className="hero-line hero-btns flex gap-4" style={{ opacity: heroPhase >= 5 ? 1 : 0, transform: heroPhase >= 5 ? 'translateY(0)' : 'translateY(30px)', transition: 'opacity 0.6s ease, transform 0.6s ease' }}>
+          <p className="text-lg md:text-xl text-blue-200/80 mb-6 font-light min-h-[1.5em]" style={{ opacity: heroPhase >= 3 ? 1 : 0, transform: heroPhase >= 3 ? 'translateY(0)' : 'translateY(30px)', transition: 'opacity 0.6s ease, transform 0.6s ease' }}>{heroPhase >= 3 && <Typewriter startDelay={200} onFirstDone={() => setSubtitleDone(true)} />}</p>
+          <p className="text-gray-400 leading-relaxed mb-8 max-w-md" style={{ opacity: heroPhase >= 4 ? 1 : 0, transform: heroPhase >= 4 ? 'translateY(0)' : 'translateY(30px)', transition: 'opacity 0.6s ease, transform 0.6s ease' }}>I craft seamless digital experiences and bridge the gap between hardware and software through innovative solutions.</p>
+          <div className="flex gap-4" style={{ opacity: heroPhase >= 5 ? 1 : 0, transform: heroPhase >= 5 ? 'translateY(0)' : 'translateY(30px)', transition: 'opacity 0.6s ease, transform 0.6s ease' }}>
             <a href="#about" className="px-6 py-3 bg-blue-500/20 border border-blue-400/50 rounded-lg hover:bg-blue-500/30 text-blue-300 font-medium text-sm">Explore My Work</a>
             <a href="#contact" className="px-6 py-3 border border-white/10 rounded-lg hover:bg-white/5 text-gray-300 font-medium text-sm">Contact Me</a>
           </div>
@@ -304,8 +332,6 @@ const PortfolioWebsite = () => {
       const secs = sectionRefs.current.filter(Boolean);
       const total = secs.length;
 
-      gsap.set(photo, { opacity: 1, scale: 1, x: 0, y: 0, rotation: 0 });
-
       ScrollTrigger.create({
         trigger: content,
         start: 'top top',
@@ -424,9 +450,9 @@ const PortfolioWebsite = () => {
         <div className="absolute inset-0">
           <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[500px] h-[500px] bg-blue-500/8 rounded-full blur-[120px]"></div>
         </div>
-        <div ref={photoRef} className="absolute top-1/2 will-change-transform photo-pop-in" style={{ left: '75%', transform: 'translate(-50%, -50%)' }}>
-          <div className="absolute inset-0 rounded-full photo-pop-in-glow" style={{ boxShadow: '0 0 60px rgba(59,130,246,0.3), 0 0 120px rgba(59,130,246,0.15)', width: 'calc(100% + 16px)', height: 'calc(100% + 16px)', top: '-8px', left: '-8px' }}></div>
-          <img src="/image.png" alt="Elisee" className="w-64 h-64 md:w-72 md:h-72 rounded-full object-cover brightness-110 photo-img" style={{ backfaceVisibility: 'hidden' }} />
+        <div ref={photoRef} className="absolute top-1/2 will-change-transform" style={{ left: '75%', transform: 'translate(-50%, -50%)', opacity: photoVisible ? 1 : 0, transition: 'opacity 0.8s ease, transform 0.8s ease' }}>
+          <div className="absolute inset-0 rounded-full" style={{ opacity: photoVisible ? 0.3 : 0, transition: 'opacity 0.8s ease', boxShadow: '0 0 60px rgba(59,130,246,0.3), 0 0 120px rgba(59,130,246,0.15)', width: 'calc(100% + 16px)', height: 'calc(100% + 16px)', top: '-8px', left: '-8px' }}></div>
+          <img src="/image.png" alt="Elisee" className="w-64 h-64 md:w-72 md:h-72 rounded-full object-cover brightness-110" style={{ backfaceVisibility: 'hidden' }} />
         </div>
       </div>
 
@@ -445,10 +471,10 @@ const PortfolioWebsite = () => {
       {showAdmin && <AdminPanel onClose={() => setShowAdmin(false)} />}
 
       {/* ===== CIRCULAR NAV (Desktop) ===== */}
-      {navPositions.map(({ link, right, top }, i) => (
-        <a key={link.id} href={`#${link.id}`}
+      {sidebarKey > 0 && navPositions.map(({ link, right, top }, i) => (
+        <a key={`${link.id}-${sidebarKey}`} href={`#${link.id}`}
           className="sidebar-btn group fixed z-40 hidden lg:flex items-center justify-center w-8 h-8 rounded-full border border-white/15 text-blue-300 transition-all duration-200 ease-out hover:scale-[1.65] hover:border-blue-400/70 hover:text-blue-200 hover:shadow-[0_0_20px_rgba(59,130,246,0.4)] hover:bg-blue-500/10 active:scale-95 sidebar-enter"
-          style={{ right: `${right}px`, top: `${top}px`, animationDelay: `${5.5 + i * 0.12}s` }}
+          style={{ right: `${right}px`, top: `${top}px`, animationDelay: `${0.1 + i * 0.12}s` }}
         >
           <svg className="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24" strokeWidth={2}>
             <path strokeLinecap="round" strokeLinejoin="round" d={link.icon} />
