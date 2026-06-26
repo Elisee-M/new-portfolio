@@ -56,6 +56,13 @@ const PortfolioWebsite = () => {
   useEffect(() => { window.scrollTo(0, 0); window.history.scrollRestoration = 'manual'; }, []);
 
   useEffect(() => {
+    if (!photoVisible || !photoRef.current) return;
+    const el = photoRef.current;
+    el.style.transition = 'opacity 0.8s ease';
+    el.style.opacity = '1';
+  }, [photoVisible]);
+
+  useEffect(() => {
     if (loadingStep >= loaderSteps.length) return;
     const timer = setTimeout(() => {
       setLoadingProgress(loaderSteps[loadingStep].done);
@@ -333,33 +340,64 @@ const PortfolioWebsite = () => {
       const total = secs.length;
       const photoLeft = 15;
       const photoRight = 75;
+      const isMobile = window.innerWidth < 1024;
 
-      const target = sectionMeta[0]?.side === 'right' ? photoRight : photoLeft;
-      gsap.set(photo, { xPercent: -50, yPercent: -50, left: `${target}%` });
-      const setPhotoY = gsap.quickSetter(photo, 'y', 'px');
+      if (isMobile) {
+        gsap.set(photo, { xPercent: -50, yPercent: 0, left: '50%', top: '15%' });
 
-      ScrollTrigger.create({
-        trigger: content,
-        start: 'top top',
-        end: 'bottom bottom',
-        onUpdate: (self) => {
-          const p = self.progress;
-          const sw = 1 / total;
-          const cs = Math.min(Math.floor(p / sw), total - 1);
+        ScrollTrigger.create({
+          trigger: content,
+          start: 'top top',
+          end: 'bottom bottom',
+          onUpdate: (self) => {
+            const p = self.progress;
 
-          if (cs !== currentSection.current) {
-            currentSection.current = cs;
-            document.querySelectorAll('.sidebar-btn').forEach((el, i) => el.classList.toggle('active', i === cs));
-            document.querySelectorAll('.mob-nav-btn').forEach((el, i) => el.classList.toggle('active', i === cs));
-            const target = sectionMeta[cs]?.side === 'right' ? photoRight : photoLeft;
-            gsap.to(photo, { left: `${target}%`, duration: 0.6, ease: 'power2.out', overwrite: 'auto' });
+            const sw = 1 / total;
+            const cs = Math.min(Math.floor(p / sw), total - 1);
+            if (cs !== currentSection.current) {
+              currentSection.current = cs;
+              document.querySelectorAll('.mob-nav-btn').forEach((el, i) => el.classList.toggle('active', i === cs));
+            }
+
+            if (p < 0.35) {
+              const pp = p / 0.35;
+              photo.style.transform = `translate(-50%, 0px) scale(${1 - pp * 0.65})`;
+              photo.style.opacity = 1 - pp;
+            } else {
+              photo.style.opacity = '0';
+            }
+
+            if (progress) progress.style.width = `${p * 100}%`;
           }
+        });
+      } else {
+        const target = sectionMeta[0]?.side === 'right' ? photoRight : photoLeft;
+        gsap.set(photo, { xPercent: -50, yPercent: -50, left: `${target}%` });
+        const setPhotoY = gsap.quickSetter(photo, 'y', 'px');
 
-          setPhotoY(Math.sin(p * Math.PI * 3) * 12);
+        ScrollTrigger.create({
+          trigger: content,
+          start: 'top top',
+          end: 'bottom bottom',
+          onUpdate: (self) => {
+            const p = self.progress;
+            const sw = 1 / total;
+            const cs = Math.min(Math.floor(p / sw), total - 1);
 
-          if (progress) progress.style.width = `${p * 100}%`;
-        }
-      });
+            if (cs !== currentSection.current) {
+              currentSection.current = cs;
+              document.querySelectorAll('.sidebar-btn').forEach((el, i) => el.classList.toggle('active', i === cs));
+              document.querySelectorAll('.mob-nav-btn').forEach((el, i) => el.classList.toggle('active', i === cs));
+              const target = sectionMeta[cs]?.side === 'right' ? photoRight : photoLeft;
+              gsap.to(photo, { left: `${target}%`, duration: 0.6, ease: 'power2.out', overwrite: 'auto' });
+            }
+
+            setPhotoY(Math.sin(p * Math.PI * 3) * 12);
+
+            if (progress) progress.style.width = `${p * 100}%`;
+          }
+        });
+      }
 
       ScrollTrigger.refresh();
     };
@@ -410,8 +448,8 @@ const PortfolioWebsite = () => {
         <div className="absolute inset-0">
           <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-72 sm:w-96 md:w-[500px] aspect-square bg-blue-500/8 rounded-full blur-[120px]"></div>
         </div>
-        <div ref={photoRef} className="absolute top-1/2 will-change-transform" style={{ left: '75%', opacity: photoVisible ? 1 : 0, transition: 'opacity 0.8s ease' }}>
-          <div className="absolute inset-0 rounded-full" style={{ opacity: photoVisible ? 0.3 : 0, transition: 'opacity 0.8s ease', boxShadow: '0 0 60px rgba(59,130,246,0.3), 0 0 120px rgba(59,130,246,0.15)', width: 'calc(100% + 16px)', height: 'calc(100% + 16px)', top: '-8px', left: '-8px' }}></div>
+        <div ref={photoRef} className="absolute top-1/2 will-change-transform">
+          <div className="absolute inset-0 rounded-full" style={{ boxShadow: '0 0 60px rgba(59,130,246,0.3), 0 0 120px rgba(59,130,246,0.15)', width: 'calc(100% + 16px)', height: 'calc(100% + 16px)', top: '-8px', left: '-8px' }}></div>
           <div className="w-40 h-40 sm:w-56 sm:h-56 md:w-80 md:h-80 rounded-full overflow-hidden">
             <img src="/image.png" alt="Elisee" className="w-full h-full object-cover object-top brightness-110" />
           </div>
