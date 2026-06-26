@@ -413,7 +413,7 @@ const PortfolioWebsite = () => {
         <div ref={photoRef} className="absolute top-1/2 will-change-transform" style={{ left: '75%', opacity: photoVisible ? 1 : 0, transition: 'opacity 0.8s ease' }}>
           <div className="absolute inset-0 rounded-full" style={{ opacity: photoVisible ? 0.3 : 0, transition: 'opacity 0.8s ease', boxShadow: '0 0 60px rgba(59,130,246,0.3), 0 0 120px rgba(59,130,246,0.15)', width: 'calc(100% + 16px)', height: 'calc(100% + 16px)', top: '-8px', left: '-8px' }}></div>
           <div className="w-72 h-72 md:w-80 md:h-80 rounded-full overflow-hidden">
-            <img src="/image.png" alt="Elisee" className="w-full h-full object-cover brightness-110" />
+            <img src="/image.png" alt="Elisee" className="w-full h-full object-cover object-top brightness-110" />
           </div>
         </div>
       </div>
