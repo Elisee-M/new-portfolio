@@ -10,9 +10,9 @@ export default function CertificationsSection({ onViewAll }) {
       <div className="flex items-center justify-between mb-8">
         <h2 className="text-3xl md:text-4xl font-bold text-blue-100">Certifications</h2>
         {onViewAll && (
-          <button onClick={onViewAll} className="hidden sm:flex items-center gap-1.5 px-4 py-2 bg-blue-500/20 border border-blue-400/50 rounded-lg hover:bg-blue-500/30 text-blue-300 font-medium text-xs transition-all group">
+          <button onClick={onViewAll} className="cta-primary">
             <span>View All</span>
-            <svg className="w-3.5 h-3.5 transition-transform group-hover:translate-x-0.5" fill="none" stroke="currentColor" viewBox="0 0 24 24" strokeWidth={2}><path strokeLinecap="round" strokeLinejoin="round" d="M17 8l4 4m0 0l-4 4m4-4H3" /></svg>
+            <svg className="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24" strokeWidth={2}><path strokeLinecap="round" strokeLinejoin="round" d="M17 8l4 4m0 0l-4 4m4-4H3" /></svg>
           </button>
         )}
       </div>
@@ -41,9 +41,9 @@ export default function CertificationsSection({ onViewAll }) {
           <p className="text-gray-500 text-center py-8">No certifications yet.</p>
         )}
         {onViewAll && (
-          <button onClick={onViewAll} className="sm:hidden w-full flex items-center justify-center gap-1.5 px-4 py-2.5 bg-blue-500/20 border border-blue-400/50 rounded-lg hover:bg-blue-500/30 text-blue-300 font-medium text-sm transition-all group">
+          <button onClick={onViewAll} className="sm:hidden w-full cta-primary justify-center">
             <span>View All Certifications</span>
-            <svg className="w-4 h-4 transition-transform group-hover:translate-x-0.5" fill="none" stroke="currentColor" viewBox="0 0 24 24" strokeWidth={2}><path strokeLinecap="round" strokeLinejoin="round" d="M17 8l4 4m0 0l-4 4m4-4H3" /></svg>
+            <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24" strokeWidth={2}><path strokeLinecap="round" strokeLinejoin="round" d="M17 8l4 4m0 0l-4 4m4-4H3" /></svg>
           </button>
         )}
       </div>
