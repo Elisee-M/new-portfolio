@@ -354,15 +354,13 @@ const PortfolioWebsite = () => {
         const vh = window.innerHeight;
 
         gsap.set(photo, { xPercent: -50, yPercent: 0, left: '50%', top: '70%' });
-
-        const rect = photoInner.getBoundingClientRect();
-        const coverScale = Math.max(vw / rect.width, vh / rect.height) * 1.05;
+        gsap.set(photoInner, { position: 'absolute', top: '50%', left: '50%', xPercent: -50, yPercent: -50 });
 
         const tl = gsap.timeline({
           scrollTrigger: { trigger: content, start: 'top top', end: '+=1000', scrub: 1.5 }
         });
         tl.to(photo, { top: '50%', yPercent: -50, ease: 'power2.inOut' }, 0);
-        tl.to(photoInner, { borderRadius: '0%', scale: coverScale, ease: 'power2.inOut' }, 0);
+        tl.to(photoInner, { borderRadius: '0%', width: vw, height: vh, ease: 'power2.inOut' }, 0);
         tl.to(photoGlow, { opacity: 0, ease: 'power2.inOut' }, 0);
 
         ScrollTrigger.create({
