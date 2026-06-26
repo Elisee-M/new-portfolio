@@ -193,9 +193,28 @@ const PortfolioWebsite = () => {
           <div className="space-y-3">
             {data.projects.map((p, i) => (
               <div key={p.id || i} className="card-in group backdrop-blur-2xl bg-slate-900/80 border border-white/10 rounded-xl p-5 hover:bg-blue-500/10 hover:border-blue-400/40 transition-all">
+                {p.image && (
+                  <img src={p.image} alt={p.title} className="w-full h-40 object-cover rounded-lg mb-3 border border-white/10" onError={e => { e.target.style.display = 'none' }} />
+                )}
                 <h3 className="text-base font-semibold text-blue-300 mb-1 group-hover:text-blue-200">{p.title}</h3>
                 <p className="text-sm text-gray-400 mb-2 leading-relaxed">{p.desc}</p>
                 {p.tech && <div className="flex flex-wrap gap-1.5">{p.tech.split(', ').map((t, ti) => <span key={ti} className="px-2 py-0.5 bg-blue-500/10 border border-blue-400/20 rounded text-xs text-blue-400/80">{t}</span>)}</div>}
+                {(p.demo || p.source) && (
+                  <div className="flex gap-2 mt-3">
+                    {p.demo && (
+                      <a href={p.demo} target="_blank" rel="noopener noreferrer" className="inline-flex items-center gap-1 px-3 py-1.5 text-xs bg-blue-600/20 border border-blue-400/30 text-blue-400 rounded-lg hover:bg-blue-600/30 transition-colors">
+                        <svg className="w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24" strokeWidth={2}><path strokeLinecap="round" strokeLinejoin="round" d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14" /></svg>
+                        Demo
+                      </a>
+                    )}
+                    {p.source && (
+                      <a href={p.source} target="_blank" rel="noopener noreferrer" className="inline-flex items-center gap-1 px-3 py-1.5 text-xs bg-slate-700/50 border border-white/20 text-gray-300 rounded-lg hover:bg-slate-700 transition-colors">
+                        <svg className="w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24" strokeWidth={2}><path strokeLinecap="round" strokeLinejoin="round" d="M10 20l4-16m4 4l4 4-4 4M6 16l-4-4 4-4" /></svg>
+                        Source
+                      </a>
+                    )}
+                  </div>
+                )}
               </div>
             ))}
           </div>
@@ -528,9 +547,28 @@ const PortfolioWebsite = () => {
             <div className="p-6 pt-4 grid gap-4 md:grid-cols-2">
               {data.projects.map((p, i) => (
                 <div key={p.id || i} className="backdrop-blur-2xl bg-slate-800/80 border border-white/10 rounded-xl p-5 hover:border-blue-400/40 transition-all">
+                  {p.image && (
+                    <img src={p.image} alt={p.title} className="w-full h-36 object-cover rounded-lg mb-3 border border-white/10" onError={e => { e.target.style.display = 'none' }} />
+                  )}
                   <h4 className="text-base font-semibold text-blue-300 mb-1">{p.title}</h4>
                   <p className="text-sm text-gray-400 mb-2 leading-relaxed">{p.desc}</p>
                   {p.tech && <div className="flex flex-wrap gap-1.5">{p.tech.split(', ').map((t, ti) => <span key={ti} className="px-2 py-0.5 bg-blue-500/10 border border-blue-400/20 rounded text-xs text-blue-400/80">{t}</span>)}</div>}
+                  {(p.demo || p.source) && (
+                    <div className="flex gap-2 mt-3">
+                      {p.demo && (
+                        <a href={p.demo} target="_blank" rel="noopener noreferrer" className="inline-flex items-center gap-1 px-3 py-1.5 text-xs bg-blue-600/20 border border-blue-400/30 text-blue-400 rounded-lg hover:bg-blue-600/30 transition-colors">
+                          <svg className="w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24" strokeWidth={2}><path strokeLinecap="round" strokeLinejoin="round" d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14" /></svg>
+                          Demo
+                        </a>
+                      )}
+                      {p.source && (
+                        <a href={p.source} target="_blank" rel="noopener noreferrer" className="inline-flex items-center gap-1 px-3 py-1.5 text-xs bg-slate-700/50 border border-white/20 text-gray-300 rounded-lg hover:bg-slate-700 transition-colors">
+                          <svg className="w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24" strokeWidth={2}><path strokeLinecap="round" strokeLinejoin="round" d="M10 20l4-16m4 4l4 4-4 4M6 16l-4-4 4-4" /></svg>
+                          Source
+                        </a>
+                      )}
+                    </div>
+                  )}
                 </div>
               ))}
               {data.projects.length === 0 && <p className="text-gray-500 text-center py-12 col-span-2">No projects yet.</p>}
@@ -557,13 +595,18 @@ const PortfolioWebsite = () => {
                 <div key={c.id} className="backdrop-blur-2xl bg-slate-800/80 border border-white/10 rounded-xl p-5 hover:border-blue-400/40 transition-all">
                   <div className="flex items-start justify-between gap-4">
                     <div className="min-w-0">
-                      <h4 className="text-base font-semibold text-blue-300 mb-1">{c.title}</h4>
+                      <h4 className="text-base font-semibold text-blue-300 mb-1">{c.name}</h4>
                       <div className="flex items-center gap-2 flex-wrap">
-                        <span className="text-xs text-blue-400/70">{c.issuer}</span>
-                        <span className="text-xs text-gray-600">•</span>
                         <span className="text-xs text-gray-500">{c.date}</span>
+                        {c.credentialUrl && (
+                          <>
+                            <span className="text-xs text-gray-600">•</span>
+                            <a href={c.credentialUrl} target="_blank" rel="noopener noreferrer" className="text-xs text-blue-400/70 hover:text-blue-300 underline underline-offset-2">
+                              View Credential
+                            </a>
+                          </>
+                        )}
                       </div>
-                      {c.desc && <p className="text-sm text-gray-400 mt-2 leading-relaxed">{c.desc}</p>}
                     </div>
                     <svg className="w-8 h-8 shrink-0 text-blue-400/30" fill="none" stroke="currentColor" viewBox="0 0 24 24" strokeWidth={1.5}>
                       <path strokeLinecap="round" strokeLinejoin="round" d="M9 12.75L11.25 15 15 9.75M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />

@@ -21,15 +21,18 @@ export default function CertificationsSection({ onViewAll }) {
           <div key={c.id} className="card-in group backdrop-blur-2xl bg-slate-900/80 border border-white/10 rounded-xl p-5 hover:bg-blue-500/10 hover:border-blue-400/40 transition-all">
             <div className="flex items-start justify-between gap-4">
               <div className="min-w-0">
-                <h3 className="text-base font-semibold text-blue-300 mb-1 group-hover:text-blue-200">{c.title}</h3>
+                <h3 className="text-base font-semibold text-blue-300 mb-1 group-hover:text-blue-200">{c.name}</h3>
                 <div className="flex items-center gap-2 flex-wrap">
-                  <span className="text-xs text-blue-400/70">{c.issuer}</span>
-                  <span className="text-xs text-gray-600">•</span>
                   <span className="text-xs text-gray-500">{c.date}</span>
+                  {c.credentialUrl && (
+                    <>
+                      <span className="text-xs text-gray-600">•</span>
+                      <a href={c.credentialUrl} target="_blank" rel="noopener noreferrer" className="text-xs text-blue-400/70 hover:text-blue-300 underline underline-offset-2">
+                        View Credential
+                      </a>
+                    </>
+                  )}
                 </div>
-                {c.desc && (
-                  <p className="text-sm text-gray-400 mt-2 leading-relaxed">{c.desc}</p>
-                )}
               </div>
               <svg className="w-8 h-8 shrink-0 text-blue-400/30 group-hover:text-blue-400/60 transition-colors" fill="none" stroke="currentColor" viewBox="0 0 24 24" strokeWidth={1.5}>
                 <path strokeLinecap="round" strokeLinejoin="round" d="M9 12.75L11.25 15 15 9.75M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />

@@ -4,10 +4,10 @@ const STORAGE_KEY = 'portfolio_data';
 
 const defaultData = {
   projects: [
-    { id: 1, title: "Arduino Smart Weight Scale", desc: "HX711 load cell amplifier with LCD display, real-time calibration.", tech: "Arduino, C++, HX711" },
-    { id: 2, title: "Keypad-Controlled Servo Gate", desc: "4x4 matrix keypad interface with servo actuator for gate control.", tech: "Arduino, Servo, Matrix" },
-    { id: 3, title: "IoT Sensor Network", desc: "Multi-sensor data collection with wireless transmission and cloud dashboard.", tech: "ESP32, MQTT, Node.js" },
-    { id: 4, title: "Smart Home Dashboard", desc: "Real-time monitoring and control interface for connected home devices.", tech: "React, WebSockets, Chart.js" }
+    { id: 1, title: "Arduino Smart Weight Scale", desc: "HX711 load cell amplifier with LCD display, real-time calibration.", tech: "Arduino, C++, HX711", image: "", demo: "", source: "" },
+    { id: 2, title: "Keypad-Controlled Servo Gate", desc: "4x4 matrix keypad interface with servo actuator for gate control.", tech: "Arduino, Servo, Matrix", image: "", demo: "", source: "" },
+    { id: 3, title: "IoT Sensor Network", desc: "Multi-sensor data collection with wireless transmission and cloud dashboard.", tech: "ESP32, MQTT, Node.js", image: "", demo: "", source: "" },
+    { id: 4, title: "Smart Home Dashboard", desc: "Real-time monitoring and control interface for connected home devices.", tech: "React, WebSockets, Chart.js", image: "", demo: "", source: "" }
   ],
   experiences: [
     { id: 1, title: "Full-Stack Developer", org: "Freelance", period: "2023 - Present", desc: "Building scalable web applications and embedded systems solutions." },
@@ -21,18 +21,32 @@ const defaultData = {
     { cat: "Tools", items: ["Git", "Docker", "Linux", "Figma", "VS Code"] }
   ],
   certifications: [
-    { id: 1, title: "AWS Certified Developer", issuer: "Amazon Web Services", date: "2024", desc: "Associate-level certification for developing on AWS." },
-    { id: 2, title: "Google IT Support", issuer: "Google", date: "2023", desc: "Professional certificate in IT support fundamentals." },
-    { id: 3, title: "Meta Front-End Developer", issuer: "Meta", date: "2023", desc: "Professional certificate in front-end development." }
+    { id: 1, name: "AWS Certified Developer", date: "2024", credentialUrl: "https://aws.amazon.com/certification/" },
+    { id: 2, name: "Google IT Support", date: "2023", credentialUrl: "https://www.coursera.org/professional-certificates/google-it-support" },
+    { id: 3, name: "Meta Front-End Developer", date: "2023", credentialUrl: "https://www.coursera.org/professional-certificates/meta-front-end-developer" }
   ]
 };
+
+function migrateCert(cert) {
+  if (cert.name) return cert;
+  return { id: cert.id, name: cert.title || "", date: cert.date || "", credentialUrl: "" };
+}
+
+function migrateProject(proj) {
+  return { image: "", demo: "", source: "", ...proj };
+}
 
 function loadData() {
   try {
     const raw = localStorage.getItem(STORAGE_KEY);
     if (raw) {
       const parsed = JSON.parse(raw);
-      return { ...defaultData, ...parsed };
+      const migrated = { ...defaultData };
+      if (parsed.projects) migrated.projects = parsed.projects.map(migrateProject);
+      if (parsed.certifications) migrated.certifications = parsed.certifications.map(migrateCert);
+      if (parsed.experiences) migrated.experiences = parsed.experiences;
+      if (parsed.skills) migrated.skills = parsed.skills;
+      return migrated;
     }
   } catch (e) {
     console.warn('Failed to load portfolio data from localStorage:', e);
