@@ -36,7 +36,7 @@ const sectionMeta = [
 ];
 
 const PortfolioWebsite = () => {
-  const { data } = usePortfolioData();
+  const { data, submitRating } = usePortfolioData();
   const [showAdmin, setShowAdmin] = useState(false);
   const [rating, setRating] = useState(0);
   const [hoverRating, setHoverRating] = useState(0);
@@ -420,6 +420,7 @@ const PortfolioWebsite = () => {
                   <button
                     onClick={() => {
                       if (!ratingName.trim()) return;
+                      submitRating({ type: 'overall', name: ratingName.trim(), email: ratingEmail.trim(), rating });
                       setRatingSubmitted(true);
                       setShowRatingModal(false);
                       setRatingName('');
