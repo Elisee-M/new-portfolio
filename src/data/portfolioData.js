@@ -252,15 +252,38 @@ export function PortfolioDataProvider({ children }) {
     setData({ projects, experiences: exps, skills, certifications: certs });
   }, []);
 
+  const submitRating = useCallback(async (ratingData) => {
+    const res = await fetch(`${API_URL}/ratings`, {
+      method: 'POST', headers: headers(), body: JSON.stringify(ratingData)
+    });
+    if (!res.ok) return null;
+    return res.json();
+  }, []);
+
+  const fetchRatings = useCallback(async () => {
+    const token = getToken();
+    if (!token) return;
+    try {
+      const res = await fetch(`${API_URL}/ratings`, { headers: headers() });
+      if (res.ok) {
+        const data = await res.json();
+        setRatings(data);
+      }
+    } catch {}
+  }, []);
+
   const updateCvUrl = useCallback((url) => {
     setData(prev => ({ ...prev, cvUrl: url }));
   }, []);
 
   const value = {
     data,
+    ratings,
     apiReady,
     resetData,
     updateCvUrl,
+    submitRating,
+    fetchRatings,
     updateProjects, addProject, updateProject, deleteProject,
     updateExperiences, addExperience, updateExperience, deleteExperience,
     updateSkills, addSkillCategory, updateSkillCategory, deleteSkillCategory,
