@@ -12,6 +12,12 @@ const transporter = nodemailer.createTransport({
   }
 });
 
+transporter.verify().then(() => {
+  console.log('Gmail transporter ready');
+}).catch(err => {
+  console.error('Gmail transporter error — check GMAIL_PASS in .env:', err.message);
+});
+
 router.post('/', async (req, res) => {
   try {
     const { name, email, topic, message } = req.body;
