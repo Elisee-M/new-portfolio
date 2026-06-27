@@ -17,12 +17,12 @@ const navLinks = [
 ];
 
 const loaderSteps = [
-  { text: 'Initializing environment...', done: 15 },
-  { text: 'Connecting to database...', done: 30 },
-  { text: 'Fetching portfolio data...', done: 50 },
-  { text: 'Optimizing assets...', done: 70 },
-  { text: 'Rendering components...', done: 90 },
-  { text: 'Portfolio ready!', done: 100 }
+  { text: 'Initializing environment...', done: 15, icon: 'M10.325 4.317c.426-1.756 2.924-1.756 3.35 0a1.724 1.724 0 002.573 1.066c1.543-.94 3.31.826 2.37 2.37a1.724 1.724 0 001.066 2.573c1.756.426 1.756 2.924 0 3.35a1.724 1.724 0 00-1.066 2.573c.94 1.543-.826 3.31-2.37 2.37a1.724 1.724 0 00-2.573 1.066c-.426 1.756-2.924 1.756-3.35 0a1.724 1.724 0 00-2.573-1.066c-1.543.94-3.31-.826-2.37-2.37a1.724 1.724 0 00-1.066-2.573c-1.756-.426-1.756-2.924 0-3.35a1.724 1.724 0 001.066-2.573c-.94-1.543.826-3.31 2.37-2.37.996.608 2.296.07 2.572-1.065z' },
+  { text: 'Connecting to database...', done: 30, icon: 'M4 7v10c0 2.21 3.582 4 8 4s8-1.79 8-4V7M4 7c0 2.21 3.582 4 8 4s8-1.79 8-4M4 7c0-2.21 3.582-4 8-4s8 1.79 8 4m0 5c0 2.21-3.582 4-8 4s-8-1.79-8-4' },
+  { text: 'Fetching portfolio data...', done: 50, icon: 'M7 16a4 4 0 01-.88-7.903A5 5 0 1115.9 6L16 6a5 5 0 011 9.9M15 13l-3-3m0 0l-3 3m3-3v12' },
+  { text: 'Optimizing assets...', done: 70, icon: 'M5 3v4M3 5h4M6 17v4m-2-2h4m5-16l2.286 6.857L21 12l-5.714 2.143L13 21l-2.286-6.857L5 12l5.714-2.143L13 3z' },
+  { text: 'Rendering components...', done: 90, icon: 'M4 5a1 1 0 011-1h14a1 1 0 011 1v2a1 1 0 01-1 1H5a1 1 0 01-1-1V5zM4 13a1 1 0 011-1h6a1 1 0 011 1v6a1 1 0 01-1 1H5a1 1 0 01-1-1v-6zM16 13a1 1 0 011-1h2a1 1 0 011 1v6a1 1 0 01-1 1h-2a1 1 0 01-1-1v-6z' },
+  { text: 'Portfolio ready!', done: 100, icon: 'M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z' }
 ];
 
 const sectionMeta = [
@@ -46,6 +46,7 @@ const PortfolioWebsite = () => {
   const [ratingSubmitted, setRatingSubmitted] = useState(false);
   const [loading, setLoading] = useState(true);
   const [loadingProgress, setLoadingProgress] = useState(0);
+  const [displayedProgress, setDisplayedProgress] = useState(0);
   const [loadingStep, setLoadingStep] = useState(0);
   const [heroPhase, setHeroPhase] = useState(0);
   const [nameDone, setNameDone] = useState(false);
