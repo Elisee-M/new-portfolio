@@ -1,4 +1,4 @@
-import React, { useState, useRef } from 'react';
+import React, { useState, useRef, useEffect } from 'react';
 import { usePortfolioData } from '../data/portfolioData';
 import ProjectsManager from './ProjectsManager';
 import SkillsManager from './SkillsManager';
@@ -13,10 +13,14 @@ export default function AdminPanel({ onClose }) {
   const [password, setPassword] = useState('');
   const [error, setError] = useState('');
   const [tab, setTab] = useState('projects');
-  const { data, resetData, updateCvUrl } = usePortfolioData();
+  const { data, ratings, resetData, updateCvUrl, fetchRatings } = usePortfolioData();
   const [cvUploading, setCvUploading] = useState(false);
   const [cvError, setCvError] = useState('');
   const cvFileRef = useRef(null);
+
+  useEffect(() => {
+    if (loggedIn) fetchRatings();
+  }, [loggedIn, fetchRatings]);
 
   const handleCvUpload = async (e) => {
     const file = e.target.files?.[0];
