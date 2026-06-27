@@ -34,6 +34,20 @@ code {
   100% { opacity: 1; transform: translateY(0) scale(1); }
 }
 
+/* === Loader shimmer === */
+@keyframes loader-shimmer {
+  0% { background-position: -200% center; }
+  100% { background-position: 200% center; }
+}
+.loader-bar::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(90deg, transparent, rgba(255,255,255,0.15), transparent);
+  background-size: 200% 100%;
+  animation: loader-shimmer 1.5s ease-in-out infinite;
+}
+
 .hero-line {
   opacity: 0;
   animation: hero-up 0.7s cubic-bezier(0.22, 1, 0.36, 1) forwards;

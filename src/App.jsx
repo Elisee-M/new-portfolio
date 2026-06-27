@@ -676,16 +676,26 @@ const PortfolioWebsite = () => {
     <div className="min-h-screen bg-slate-950 text-white overflow-x-hidden">
       {/* Loader overlay */}
       {loading && (
-        <div className="fixed inset-0 z-[100] flex flex-col items-center justify-center bg-slate-950" style={{ transition: 'opacity 0.4s' }}>
-          <div className="w-full max-w-xs mx-6">
-            <div className="h-1 bg-slate-800 rounded-full overflow-hidden">
-              <div className="h-full bg-gradient-to-r from-blue-500 to-cyan-400 rounded-full transition-all duration-300 ease-out" style={{ width: `${loadingProgress}%` }}></div>
+        <div className="fixed inset-0 z-[100] flex flex-col items-center justify-center bg-slate-950">
+          <div className="absolute inset-0 bg-gradient-to-b from-blue-500/5 via-transparent to-cyan-500/5 pointer-events-none"></div>
+          <div className="w-full max-w-xs mx-6 relative">
+            <div className="mb-10 text-center">
+              <h1 className="text-4xl md:text-5xl font-bold bg-gradient-to-r from-blue-400 via-cyan-300 to-blue-400 bg-clip-text text-transparent">
+                ELISEE
+              </h1>
+              <p className="text-xs text-gray-500 tracking-[0.35em] uppercase mt-3">Portfolio</p>
             </div>
-            <div className="mt-4 flex items-center gap-2">
-              <span className="w-2 h-2 rounded-full bg-blue-400 animate-pulse"></span>
-              <p className="text-sm text-gray-400 font-mono">
-                {loaderSteps[Math.min(loadingStep, loaderSteps.length - 1)]?.text}
-              </p>
+            <div className="h-1.5 bg-slate-800/50 rounded-full overflow-hidden relative loader-bar">
+              <div className="h-full w-full rounded-full bg-gradient-to-r from-blue-500 via-cyan-400 to-blue-500 transition-all duration-700 ease-out" style={{ width: `${loadingProgress}%` }}></div>
+            </div>
+            <div className="mt-5 flex items-center justify-between">
+              <div className="flex items-center gap-2">
+                <span className="w-1.5 h-1.5 rounded-full bg-blue-400 animate-pulse"></span>
+                <p className="text-sm text-gray-400 font-mono">
+                  {loaderSteps[Math.min(loadingStep, loaderSteps.length - 1)]?.text}
+                </p>
+              </div>
+              <span className="text-sm font-mono text-gray-500">({loadingProgress}%)</span>
             </div>
           </div>
         </div>
@@ -966,6 +976,7 @@ const PortfolioWebsite = () => {
           transition: all 0.35s cubic-bezier(0.34, 1.56, 0.64, 1);
         }
         .sidebar-btn.active .sidebar-btn-icon {
+          transform: scale(1.6);
           color: #93c5fd;
           filter: drop-shadow(0 0 10px rgba(59,130,246,0.5));
         }
