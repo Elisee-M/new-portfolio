@@ -562,7 +562,7 @@ const PortfolioWebsite = () => {
         </div>
       )
     }
-  ], [data, rating, hoverRating, showRatingModal, ratingName, ratingEmail, ratingSubmitted, heroPhase, expandedProjects, projectRatingStates, projectRatingNameInputs, handleDownloadCV, contactForm, contactSending, contactSent, contactError, handleContactSubmit]);
+  ], [data, rating, hoverRating, showRatingModal, ratingName, ratingEmail, ratingSubmitted, heroPhase, expandedProjects, projectRatingStates, projectRatingNameInputs, handleDownloadCV, contactForm, contactSending, contactSent, contactError, handleContactSubmit, submitRating]);
 
   const navPositions = useMemo(() => {
     const r = 70;
