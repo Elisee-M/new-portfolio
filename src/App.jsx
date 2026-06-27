@@ -348,6 +348,7 @@ const PortfolioWebsite = () => {
                               onClick={() => {
                                 const name = (projectRatingNameInputs[i] || '').trim();
                                 if (!name) return;
+                                submitRating({ type: 'project', projectId: p._id || p.id || String(i), projectTitle: p.title, name, rating: rs.rating });
                                 setProjectRatingStates(prev => ({ ...prev, [i]: { ...prev[i], name, submitted: true } }));
                               }}
                               className="px-3 py-1.5 text-xs bg-blue-500/20 border border-blue-400/50 rounded-lg text-blue-300 hover:bg-blue-500/30 transition-colors"
@@ -851,6 +852,7 @@ const PortfolioWebsite = () => {
                                 onClick={() => {
                                   const name = (projectRatingNameInputs[key] || '').trim();
                                   if (!name) return;
+                                  submitRating({ type: 'project', projectId: p._id || p.id || key, projectTitle: p.title, name, rating: rs.rating });
                                   setProjectRatingStates(prev => ({ ...prev, [key]: { ...prev[key], name, submitted: true } }));
                                 }}
                                 className="px-3 py-1.5 text-xs bg-blue-500/20 border border-blue-400/50 rounded-lg text-blue-300 hover:bg-blue-500/30 transition-colors"
