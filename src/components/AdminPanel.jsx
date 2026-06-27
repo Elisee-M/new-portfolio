@@ -15,15 +15,13 @@ export default function AdminPanel({ onClose }) {
   const [tab, setTab] = useState('projects');
   const { data, resetData, updateCvUrl } = usePortfolioData();
   const [cvUploading, setCvUploading] = useState(false);
+  const [cvError, setCvError] = useState('');
   const cvFileRef = useRef(null);
 
   const handleCvUpload = async (e) => {
     const file = e.target.files?.[0];
     if (!file) return;
-    if (file.type !== 'application/pdf') {
-      alert('Only PDF files are allowed');
-      return;
-    }
+    setCvError('');
     setCvUploading(true);
     const fd = new FormData();
     fd.append('cv', file);
@@ -33,12 +31,16 @@ export default function AdminPanel({ onClose }) {
         headers: { 'Authorization': `Bearer ${sessionStorage.getItem('portfolio_token')}` },
         body: fd
       });
-      if (!res.ok) throw new Error('Upload failed');
+      if (!res.ok) {
+        const errData = await res.json().catch(() => ({ error: 'Upload failed' }));
+        throw new Error(errData.error || `Server error (${res.status})`);
+      }
       const { url } = await res.json();
       updateCvUrl(url);
+      setCvError('');
       alert('CV uploaded successfully!');
-    } catch {
-      alert('Failed to upload CV');
+    } catch (err) {
+      setCvError(err.message);
     } finally {
       setCvUploading(false);
       if (cvFileRef.current) cvFileRef.current.value = '';
@@ -207,6 +209,7 @@ export default function AdminPanel({ onClose }) {
                 </button>
                 {cvUploading && <span className="text-sm text-blue-400">Uploading...</span>}
               </div>
+              {cvError && <p className="text-sm text-red-400 mt-3">{cvError}</p>}
               <p className="text-xs text-gray-500 mt-3">Only PDF files up to 10MB are accepted.</p>
             </div>
           </div>
