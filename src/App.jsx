@@ -882,7 +882,7 @@ const PortfolioWebsite = () => {
       {/* ===== CIRCULAR NAV (Desktop) ===== */}
       {sidebarKey > 0 && navPositions.map(({ link, right, top }, i) => (
         <a key={`${link.id}-${sidebarKey}`} href={`#${link.id}`}
-          className="sidebar-btn group fixed z-40 hidden lg:flex items-center justify-center w-8 h-8 rounded-full border border-white/15 text-blue-300 hover:scale-[2.2] hover:border-blue-400 hover:text-blue-200 hover:shadow-[0_0_32px_rgba(59,130,246,0.6)] hover:bg-blue-500/15 active:scale-95 sidebar-enter"
+          className="sidebar-btn group fixed z-40 hidden lg:flex items-center justify-center w-8 h-8 rounded-full border border-white/15 text-blue-300 active:scale-95 sidebar-enter"
           style={{ right: `${right}px`, top: `${top}px`, animationDelay: `${0.1 + i * 0.12}s` }}
         >
           <svg className="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24" strokeWidth={2}>
@@ -933,7 +933,15 @@ const PortfolioWebsite = () => {
 
       <style>{`
         .sidebar-btn {
-          transition: all 0.5s cubic-bezier(0.34, 1.56, 0.64, 1);
+          cursor: pointer;
+          transition: all 0.45s cubic-bezier(0.34, 1.56, 0.64, 1);
+        }
+        .sidebar-btn:hover {
+          transform: scale(2.4) !important;
+          border-color: #60a5fa !important;
+          color: #93c5fd !important;
+          background: rgba(59,130,246,0.15) !important;
+          box-shadow: 0 0 36px rgba(59,130,246,0.65) !important;
         }
         .sidebar-tooltip {
           transition: all 0.35s cubic-bezier(0.34, 1.56, 0.64, 1);
@@ -942,8 +950,8 @@ const PortfolioWebsite = () => {
           border-color: #60a5fa !important;
           color: #93c5fd !important;
           background: rgba(59,130,246,0.15);
-          transform: scale(2.2) !important;
-          box-shadow: 0 0 32px rgba(59,130,246,0.6);
+          transform: scale(2.4) !important;
+          box-shadow: 0 0 36px rgba(59,130,246,0.65);
         }
         .mob-nav-btn.active {
           color: #60a5fa !important;
