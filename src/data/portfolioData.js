@@ -253,11 +253,20 @@ export function PortfolioDataProvider({ children }) {
   }, []);
 
   const submitRating = useCallback(async (ratingData) => {
-    const res = await fetch(`${API_URL}/ratings`, {
-      method: 'POST', headers: headers(), body: JSON.stringify(ratingData)
-    });
-    if (!res.ok) return null;
-    return res.json();
+    try {
+      const res = await fetch(`${API_URL}/ratings`, {
+        method: 'POST', headers: headers(), body: JSON.stringify(ratingData)
+      });
+      if (!res.ok) {
+        const err = await res.text();
+        console.error('submitRating failed:', res.status, err);
+        return null;
+      }
+      return res.json();
+    } catch (e) {
+      console.error('submitRating error:', e);
+      return null;
+    }
   }, []);
 
   const fetchRatings = useCallback(async () => {

@@ -22,6 +22,10 @@ export default function AdminPanel({ onClose }) {
     if (loggedIn) fetchRatings();
   }, [loggedIn, fetchRatings]);
 
+  useEffect(() => {
+    if (loggedIn && tab === 'ratings') fetchRatings();
+  }, [tab, loggedIn, fetchRatings]);
+
   const handleCvUpload = async (e) => {
     const file = e.target.files?.[0];
     if (!file) return;
