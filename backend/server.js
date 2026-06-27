@@ -11,6 +11,7 @@ const experienceRoutes = require('./routes/experiences');
 const skillRoutes = require('./routes/skills');
 const uploadRoutes = require('./routes/upload');
 const cvRoutes = require('./routes/cv');
+const contactRoutes = require('./routes/contact');
 
 const app = express();
 const PORT = process.env.PORT || 5000;
@@ -26,6 +27,7 @@ app.use('/api/experiences', experienceRoutes);
 app.use('/api/skills', skillRoutes);
 app.use('/api/upload', uploadRoutes);
 app.use('/api/cv', cvRoutes);
+app.use('/api/contact', contactRoutes);
 
 app.get('/api/health', (req, res) => res.json({ ok: true }));
 
