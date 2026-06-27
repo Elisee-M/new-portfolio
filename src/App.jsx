@@ -881,19 +881,31 @@ const PortfolioWebsite = () => {
       )}
 
       {/* ===== CIRCULAR NAV (Desktop) ===== */}
-      {sidebarKey > 0 && navPositions.map(({ link, right, top }, i) => (
-        <a key={`${link.id}-${sidebarKey}`} href={`#${link.id}`}
-          className="sidebar-btn group fixed z-40 hidden lg:flex items-center justify-center w-8 h-8 rounded-full border border-white/15 text-blue-300 active:scale-95 sidebar-enter"
-          style={{ right: `${right}px`, top: `${top}px`, animationDelay: `${0.1 + i * 0.12}s` }}
-        >
-          <svg className="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24" strokeWidth={2}>
-            <path strokeLinecap="round" strokeLinejoin="round" d={link.icon} />
-          </svg>
-          <span className="absolute right-full mr-3 px-2.5 py-1 bg-black/70 backdrop-blur-sm text-blue-300 italic font-serif text-[11px] rounded whitespace-nowrap opacity-0 translate-x-2 group-hover:opacity-100 group-hover:translate-x-0 pointer-events-none sidebar-tooltip">
-            {link.label}
-          </span>
-        </a>
-      ))}
+      {sidebarKey > 0 && (
+        <div className="fixed right-0 top-0 w-0 h-full z-40 hidden lg:block pointer-events-none"
+          onMouseLeave={() => setHoveredNav(null)}>
+          {navPositions.map(({ link, right, top }, i) => (
+            <a key={`${link.id}-${sidebarKey}`} href={`#${link.id}`}
+              onMouseEnter={() => setHoveredNav(i)}
+              onMouseLeave={() => setHoveredNav(null)}
+              className="sidebar-btn group fixed z-40 hidden lg:flex items-center justify-center sidebar-enter pointer-events-auto"
+              style={{
+                right: `${right}px`,
+                top: `${top}px`,
+                animationDelay: `${0.1 + i * 0.12}s`,
+                '--wave-delay': `${hoveredNav !== null ? Math.abs(i - hoveredNav) * 0.05 : 0}s`
+              }}
+            >
+              <svg className="sidebar-btn-icon w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24" strokeWidth={2}>
+                <path strokeLinecap="round" strokeLinejoin="round" d={link.icon} />
+              </svg>
+              <span className="absolute right-full mr-3 px-2.5 py-1 bg-black/70 backdrop-blur-sm text-blue-300 italic font-serif text-[11px] rounded whitespace-nowrap opacity-0 translate-x-2 group-hover:opacity-100 group-hover:translate-x-0 pointer-events-none sidebar-tooltip">
+                {link.label}
+              </span>
+            </a>
+          ))}
+        </div>
+      )}
 
       {/* ===== BOTTOM NAV (Mobile) ===== */}
       <div className="fixed bottom-0 left-0 right-0 z-40 lg:hidden flex items-center justify-around bg-slate-950/90 backdrop-blur-md border-t border-white/10 px-2 py-1.5 pb-[max(0.375rem,env(safe-area-inset-bottom))]">
@@ -935,24 +947,32 @@ const PortfolioWebsite = () => {
       <style>{`
         .sidebar-btn {
           cursor: pointer;
-          transition: all 0.45s cubic-bezier(0.34, 1.56, 0.64, 1);
+          border: none !important;
+          outline: none !important;
+          background: transparent !important;
+          transition: none !important;
         }
-        .sidebar-btn:hover {
-          transform: scale(2.4) !important;
-          border-color: #60a5fa !important;
-          color: #93c5fd !important;
-          background: rgba(59,130,246,0.15) !important;
-          box-shadow: 0 0 36px rgba(59,130,246,0.65) !important;
+        .sidebar-btn .sidebar-btn-icon {
+          transition: all 0.4s cubic-bezier(0.34, 1.56, 0.64, 1);
+          transition-delay: var(--wave-delay, 0s);
+          color: #60a5fa;
+        }
+        .sidebar-btn:hover .sidebar-btn-icon {
+          transform: scale(2.8);
+          color: #93c5fd;
+          filter: drop-shadow(0 0 14px rgba(59,130,246,0.7));
         }
         .sidebar-tooltip {
           transition: all 0.35s cubic-bezier(0.34, 1.56, 0.64, 1);
         }
-        .sidebar-btn.active {
-          border-color: #60a5fa !important;
-          color: #93c5fd !important;
-          background: rgba(59,130,246,0.15);
-          transform: scale(2.4) !important;
-          box-shadow: 0 0 36px rgba(59,130,246,0.65);
+        .sidebar-btn.active .sidebar-btn-icon {
+          color: #93c5fd;
+          filter: drop-shadow(0 0 10px rgba(59,130,246,0.5));
+        }
+        .sidebar-btn.active:hover .sidebar-btn-icon {
+          transform: scale(2.8);
+          color: #93c5fd;
+          filter: drop-shadow(0 0 14px rgba(59,130,246,0.7));
         }
         .mob-nav-btn.active {
           color: #60a5fa !important;
