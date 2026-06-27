@@ -915,13 +915,13 @@ const PortfolioWebsite = () => {
 
       {/* ===== CIRCULAR NAV (Desktop) ===== */}
       {sidebarKey > 0 && (
-        <div className="fixed right-0 top-0 w-0 h-full z-40 hidden lg:block pointer-events-none"
+        <div className="fixed right-0 top-0 w-0 h-full z-40 block pointer-events-none"
           onMouseLeave={() => setHoveredNav(null)}>
           {navPositions.map(({ link, right, top }, i) => (
             <a key={`${link.id}-${sidebarKey}`} href={`#${link.id}`}
               onMouseEnter={() => setHoveredNav(i)}
               onMouseLeave={() => setHoveredNav(null)}
-              className="sidebar-btn group fixed z-40 hidden lg:flex items-center justify-center sidebar-enter pointer-events-auto"
+              className="sidebar-btn group fixed z-40 flex items-center justify-center sidebar-enter pointer-events-auto"
               style={{
                 right: `${right}px`,
                 top: `${top}px`,
