@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useRef } from 'react';
 import { usePortfolioData } from '../data/portfolioData';
 import ProjectsManager from './ProjectsManager';
 import SkillsManager from './SkillsManager';
@@ -13,7 +13,37 @@ export default function AdminPanel({ onClose }) {
   const [password, setPassword] = useState('');
   const [error, setError] = useState('');
   const [tab, setTab] = useState('projects');
-  const { resetData } = usePortfolioData();
+  const { data, resetData, updateCvUrl } = usePortfolioData();
+  const [cvUploading, setCvUploading] = useState(false);
+  const cvFileRef = useRef(null);
+
+  const handleCvUpload = async (e) => {
+    const file = e.target.files?.[0];
+    if (!file) return;
+    if (file.type !== 'application/pdf') {
+      alert('Only PDF files are allowed');
+      return;
+    }
+    setCvUploading(true);
+    const fd = new FormData();
+    fd.append('cv', file);
+    try {
+      const res = await fetch(`${API_URL}/cv/upload`, {
+        method: 'POST',
+        headers: { 'Authorization': `Bearer ${sessionStorage.getItem('portfolio_token')}` },
+        body: fd
+      });
+      if (!res.ok) throw new Error('Upload failed');
+      const { url } = await res.json();
+      updateCvUrl(url);
+      alert('CV uploaded successfully!');
+    } catch {
+      alert('Failed to upload CV');
+    } finally {
+      setCvUploading(false);
+      if (cvFileRef.current) cvFileRef.current.value = '';
+    }
+  };
 
   const handleLogin = async (e) => {
     e.preventDefault();
@@ -84,7 +114,8 @@ export default function AdminPanel({ onClose }) {
     { id: 'projects', label: 'Projects' },
     { id: 'skills', label: 'Skills' },
     { id: 'experience', label: 'Experience' },
-    { id: 'certifications', label: 'Certifications' }
+    { id: 'certifications', label: 'Certifications' },
+    { id: 'cv', label: 'CV / Resume' }
   ];
 
   return (
@@ -137,6 +168,49 @@ export default function AdminPanel({ onClose }) {
         {tab === 'skills' && <SkillsManager />}
         {tab === 'experience' && <ExperienceManager />}
         {tab === 'certifications' && <CertificationsManager />}
+        {tab === 'cv' && (
+          <div>
+            <h3 className="text-lg font-semibold text-blue-100 mb-4">CV / Resume</h3>
+            <div className="bg-slate-900/80 border border-white/10 rounded-xl p-6">
+              <p className="text-sm text-gray-400 mb-4">
+                {data.cvUrl
+                  ? 'A CV PDF is currently uploaded. You can replace it below.'
+                  : 'No CV uploaded yet. Upload a PDF file below.'}
+              </p>
+              {data.cvUrl && (
+                <div className="mb-4">
+                  <a
+                    href={data.cvUrl}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="inline-flex items-center gap-2 px-4 py-2 bg-blue-600/20 border border-blue-400/30 text-blue-400 rounded-lg hover:bg-blue-600/30 transition-colors text-sm"
+                  >
+                    <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24" strokeWidth={2}><path strokeLinecap="round" strokeLinejoin="round" d="M12 10v6m0 0l-3-3m3 3l3-3m2 8H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" /></svg>
+                    View Current CV
+                  </a>
+                </div>
+              )}
+              <div className="flex items-center gap-3">
+                <input
+                  ref={cvFileRef}
+                  type="file"
+                  accept=".pdf,application/pdf"
+                  onChange={handleCvUpload}
+                  className="hidden"
+                />
+                <button
+                  onClick={() => cvFileRef.current?.click()}
+                  disabled={cvUploading}
+                  className="px-5 py-2.5 bg-blue-600 hover:bg-blue-500 text-white rounded-xl font-medium transition-colors disabled:opacity-50"
+                >
+                  {cvUploading ? 'Uploading...' : data.cvUrl ? 'Replace CV' : 'Upload CV'}
+                </button>
+                {cvUploading && <span className="text-sm text-blue-400">Uploading...</span>}
+              </div>
+              <p className="text-xs text-gray-500 mt-3">Only PDF files up to 10MB are accepted.</p>
+            </div>
+          </div>
+        )}
       </div>
     </div>
   );

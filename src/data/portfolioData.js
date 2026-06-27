@@ -46,24 +46,27 @@ export function PortfolioDataProvider({ children }) {
     projects: defaultProjects,
     experiences: defaultExperiences,
     skills: defaultSkills,
-    certifications: defaultCertifications
+    certifications: defaultCertifications,
+    cvUrl: null
   });
   const [apiReady, setApiReady] = useState(false);
 
   useEffect(() => {
     async function load() {
       try {
-        const [projects, certs, exps, skills] = await Promise.all([
+        const [projects, certs, exps, skills, cvRes] = await Promise.all([
           fetch(`${API_URL}/projects`).then(r => r.json()),
           fetch(`${API_URL}/certifications`).then(r => r.json()),
           fetch(`${API_URL}/experiences`).then(r => r.json()),
           fetch(`${API_URL}/skills`).then(r => r.json()),
+          fetch(`${API_URL}/cv`).then(r => r.ok ? r.json() : { url: null }),
         ]);
         setData({
           projects: Array.isArray(projects) && projects.length ? projects : defaultProjects,
           certifications: Array.isArray(certs) && certs.length ? certs : defaultCertifications,
           experiences: Array.isArray(exps) && exps.length ? exps : defaultExperiences,
-          skills: Array.isArray(skills) && skills.length ? skills : defaultSkills
+          skills: Array.isArray(skills) && skills.length ? skills : defaultSkills,
+          cvUrl: cvRes.url || null
         });
       } catch (e) {
         console.warn('API unavailable, using default data:', e);
@@ -248,10 +251,15 @@ export function PortfolioDataProvider({ children }) {
     setData({ projects, experiences: exps, skills, certifications: certs });
   }, []);
 
+  const updateCvUrl = useCallback((url) => {
+    setData(prev => ({ ...prev, cvUrl: url }));
+  }, []);
+
   const value = {
     data,
     apiReady,
     resetData,
+    updateCvUrl,
     updateProjects, addProject, updateProject, deleteProject,
     updateExperiences, addExperience, updateExperience, deleteExperience,
     updateSkills, addSkillCategory, updateSkillCategory, deleteSkillCategory,
