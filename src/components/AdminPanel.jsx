@@ -128,6 +128,7 @@ export default function AdminPanel({ onClose }) {
     { id: 'skills', label: 'Skills' },
     { id: 'experience', label: 'Experience' },
     { id: 'certifications', label: 'Certifications' },
+    { id: 'ratings', label: 'Ratings' },
     { id: 'cv', label: 'CV / Resume' }
   ];
 
