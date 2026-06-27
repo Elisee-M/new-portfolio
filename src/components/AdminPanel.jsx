@@ -32,8 +32,15 @@ export default function AdminPanel({ onClose }) {
         body: fd
       });
       if (!res.ok) {
-        const errData = await res.json().catch(() => ({ error: 'Upload failed' }));
-        throw new Error(errData.error || `Server error (${res.status})`);
+        let errMsg;
+        try {
+          const errData = await res.json();
+          errMsg = errData.error || `Server error (${res.status})`;
+        } catch {
+          const text = await res.text();
+          errMsg = text || `Server error (${res.status})`;
+        }
+        throw new Error(errMsg);
       }
       const { url } = await res.json();
       updateCvUrl(url);
