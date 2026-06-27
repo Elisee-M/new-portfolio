@@ -29,15 +29,19 @@ const upload = multer({
 });
 
 router.post('/upload', auth, (req, res) => {
-  upload.single('cv')(req, res, (err) => {
-    if (err) {
-      if (err instanceof multer.MulterError) return res.status(400).json({ error: err.message });
-      return res.status(400).json({ error: err.message });
-    }
-    if (!req.file) return res.status(400).json({ error: 'No file provided' });
-    const url = `${req.protocol}://${req.get('host')}/uploads/${CV_FILENAME}`;
-    res.json({ url, filename: CV_FILENAME });
-  });
+  try {
+    upload.single('cv')(req, res, (err) => {
+      if (err) {
+        if (err instanceof multer.MulterError) return res.status(400).json({ error: err.message });
+        return res.status(400).json({ error: err.message });
+      }
+      if (!req.file) return res.status(400).json({ error: 'No file provided' });
+      const url = `${req.protocol}://${req.get('host')}/uploads/${CV_FILENAME}`;
+      res.json({ url, filename: CV_FILENAME });
+    });
+  } catch (err) {
+    res.status(500).json({ error: err.message || 'Internal server error' });
+  }
 });
 
 router.get('/', (req, res) => {
