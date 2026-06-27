@@ -140,17 +140,15 @@ const PortfolioWebsite = () => {
           <div className="flex gap-3 sm:gap-4 flex-wrap" style={{ opacity: heroPhase >= 5 ? 1 : 0, transform: heroPhase >= 5 ? 'translateY(0)' : 'translateY(30px)', transition: 'opacity 0.6s ease, transform 0.6s ease' }}>
             <a href="#about" className="cta-primary">Explore My Work</a>
             <a href="#contact" className="cta-secondary">Contact Me</a>
-            {data.cvUrl ? (
-              <a href={data.cvUrl} download="Elisee_CV.pdf" className="cta-secondary">
-                <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24" strokeWidth={2}><path strokeLinecap="round" strokeLinejoin="round" d="M12 10v6m0 0l-3-3m3 3l3-3m2 8H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" /></svg>
-                Download CV
-              </a>
-            ) : (
-              <span className="cta-secondary opacity-50 cursor-not-allowed">
-                <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24" strokeWidth={2}><path strokeLinecap="round" strokeLinejoin="round" d="M12 10v6m0 0l-3-3m3 3l3-3m2 8H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" /></svg>
-                Download CV
-              </span>
-            )}
+            <a
+              href={data.cvUrl || '#'}
+              download={data.cvUrl ? 'Elisee_CV.pdf' : undefined}
+              onClick={data.cvUrl ? undefined : (e) => { e.preventDefault(); alert('CV not available yet.'); }}
+              className="cta-secondary"
+            >
+              <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24" strokeWidth={2}><path strokeLinecap="round" strokeLinejoin="round" d="M12 10v6m0 0l-3-3m3 3l3-3m2 8H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" /></svg>
+              Download CV
+            </a>
           </div>
         </div>
       )
