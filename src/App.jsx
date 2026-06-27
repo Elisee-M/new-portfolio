@@ -888,7 +888,7 @@ const PortfolioWebsite = () => {
           <svg className="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24" strokeWidth={2}>
             <path strokeLinecap="round" strokeLinejoin="round" d={link.icon} />
           </svg>
-          <span className="absolute right-full mr-3 px-2.5 py-1 bg-black/70 text-blue-300 italic font-serif text-[11px] rounded whitespace-nowrap opacity-0 translate-x-2 group-hover:opacity-100 group-hover:translate-x-0 transition-all duration-300 ease-out pointer-events-none">
+          <span className="absolute right-full mr-3 px-2.5 py-1 bg-black/70 backdrop-blur-sm text-blue-300 italic font-serif text-[11px] rounded whitespace-nowrap opacity-0 translate-x-2 group-hover:opacity-100 group-hover:translate-x-0 pointer-events-none sidebar-tooltip">
             {link.label}
           </span>
         </a>
@@ -934,6 +934,9 @@ const PortfolioWebsite = () => {
       <style>{`
         .sidebar-btn {
           transition: all 0.5s cubic-bezier(0.34, 1.56, 0.64, 1);
+        }
+        .sidebar-tooltip {
+          transition: all 0.35s cubic-bezier(0.34, 1.56, 0.64, 1);
         }
         .sidebar-btn.active {
           border-color: #60a5fa !important;
