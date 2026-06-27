@@ -182,6 +182,56 @@ export default function AdminPanel({ onClose }) {
         {tab === 'skills' && <SkillsManager />}
         {tab === 'experience' && <ExperienceManager />}
         {tab === 'certifications' && <CertificationsManager />}
+        {tab === 'ratings' && (
+          <div>
+            <h3 className="text-lg font-semibold text-blue-100 mb-4">Star Ratings</h3>
+            {ratings.length === 0 ? (
+              <div className="bg-slate-900/80 border border-white/10 rounded-xl p-8 text-center">
+                <svg className="w-12 h-12 mx-auto text-gray-600 mb-3" fill="none" stroke="currentColor" viewBox="0 0 24 24" strokeWidth={1.5}>
+                  <path strokeLinecap="round" strokeLinejoin="round" d="M11.48 3.499a.562.562 0 011.04 0l2.125 5.111a.563.563 0 00.475.345l5.518.442c.499.04.701.663.321.988l-4.204 3.602a.563.563 0 00-.182.557l1.285 5.385a.562.562 0 01-.84.61l-4.725-2.885a.563.563 0 00-.586 0L6.982 20.54a.562.562 0 01-.84-.61l1.285-5.386a.562.562 0 00-.182-.557l-4.204-3.602a.563.563 0 01.321-.988l5.518-.442a.563.563 0 00.475-.345L11.48 3.5z" />
+                </svg>
+                <p className="text-gray-400 text-sm">No ratings yet.</p>
+              </div>
+            ) : (
+              <div className="overflow-x-auto">
+                <table className="w-full text-sm">
+                  <thead>
+                    <tr className="border-b border-white/10 text-gray-400 text-left">
+                      <th className="pb-3 pr-4 font-medium">Date</th>
+                      <th className="pb-3 pr-4 font-medium">Name</th>
+                      <th className="pb-3 pr-4 font-medium">Email</th>
+                      <th className="pb-3 pr-4 font-medium">Type</th>
+                      <th className="pb-3 pr-4 font-medium">Project</th>
+                      <th className="pb-3 font-medium">Rating</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    {ratings.map((r, i) => (
+                      <tr key={r._id || i} className="border-b border-white/5 text-gray-300 hover:bg-white/5">
+                        <td className="py-3 pr-4 whitespace-nowrap text-xs text-gray-500">{new Date(r.createdAt).toLocaleDateString()}</td>
+                        <td className="py-3 pr-4 font-medium">{r.name}</td>
+                        <td className="py-3 pr-4 text-gray-400">{r.email || '—'}</td>
+                        <td className="py-3 pr-4">
+                          <span className={`px-2 py-0.5 rounded text-xs ${r.type === 'overall' ? 'bg-purple-500/20 text-purple-300' : 'bg-blue-500/20 text-blue-300'}`}>
+                            {r.type === 'overall' ? 'Overall' : 'Project'}
+                          </span>
+                        </td>
+                        <td className="py-3 pr-4 text-gray-400">{r.projectTitle || '—'}</td>
+                        <td className="py-3">
+                          <span className="flex items-center gap-1">
+                            <span className="text-yellow-400">{'★'.repeat(r.rating)}</span>
+                            <span className="text-gray-600">{'★'.repeat(5 - r.rating)}</span>
+                            <span className="text-gray-500 ml-1">({r.rating}/5)</span>
+                          </span>
+                        </td>
+                      </tr>
+                    ))}
+                  </tbody>
+                </table>
+              </div>
+            )}
+          </div>
+        )}
         {tab === 'cv' && (
           <div>
             <h3 className="text-lg font-semibold text-blue-100 mb-4">CV / Resume</h3>
