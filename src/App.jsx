@@ -963,7 +963,7 @@ const PortfolioWebsite = () => {
             key={sec.id}
             id={sec.id}
             ref={(el) => (sectionRefs.current[i] = el)}
-            className="min-h-screen flex items-center px-6 md:px-12 py-20 pb-28 lg:pb-20 bg-slate-950/60"
+            className={`min-h-screen flex ${sec.id === 'hero' ? 'items-start pt-24 md:pt-32 lg:items-center lg:pt-20' : 'items-center'} px-6 md:px-12 py-20 pb-28 lg:pb-20 bg-slate-950/60`}
           >
             <div className={`w-full ${sec.side === 'right' ? 'lg:w-2/5 lg:pr-20' : 'lg:w-1/2 lg:pl-20 lg:pr-20 lg:ml-auto'}`}>
               <div className="max-w-lg">
