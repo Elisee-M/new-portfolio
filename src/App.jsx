@@ -58,6 +58,35 @@ const PortfolioWebsite = () => {
   const [projectRatingStates, setProjectRatingStates] = useState({});
   // projectRatingStates shape: { [key]: { rating: number, name: string, submitted: boolean } }
   const [projectRatingNameInputs, setProjectRatingNameInputs] = useState({});
+  const [contactForm, setContactForm] = useState({ name: '', email: '', topic: '', message: '' });
+  const [contactSending, setContactSending] = useState(false);
+  const [contactSent, setContactSent] = useState(false);
+  const [contactError, setContactError] = useState('');
+
+  const handleContactSubmit = useCallback(async (e) => {
+    e.preventDefault();
+    const { name, email, topic, message } = contactForm;
+    if (!name.trim() || !email.trim() || !topic.trim() || !message.trim()) return;
+    setContactSending(true);
+    setContactError('');
+    try {
+      const res = await fetch(`${process.env.REACT_APP_API_URL || 'http://localhost:5000/api'}/contact`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ name, email, topic, message })
+      });
+      if (!res.ok) {
+        const err = await res.json().catch(() => ({ error: 'Failed to send' }));
+        throw new Error(err.error || 'Failed to send');
+      }
+      setContactSent(true);
+      setContactForm({ name: '', email: '', topic: '', message: '' });
+    } catch (err) {
+      setContactError(err.message);
+    } finally {
+      setContactSending(false);
+    }
+  }, [contactForm]);
 
   const handleDownloadCV = useCallback(async () => {
     if (!data.cvUrl) { alert('CV not available yet.'); return; }
@@ -424,7 +453,59 @@ const PortfolioWebsite = () => {
         <div>
           <p className="text-blue-400 font-mono text-sm mb-2 tracking-[0.2em] uppercase">Connect</p>
           <h2 className="text-3xl md:text-4xl font-bold mb-4 text-blue-100">Let's Work Together</h2>
-          <p className="text-gray-400 mb-8 leading-relaxed max-w-md">Have a project in mind? I'd love to hear from you.</p>
+          <p className="text-gray-400 mb-6 leading-relaxed max-w-md">Have a project in mind? I'd love to hear from you.</p>
+
+          {contactSent ? (
+            <div className="mb-6 p-4 bg-green-500/10 border border-green-400/30 rounded-xl text-green-400 text-sm">
+              Thank you! Your message has been sent. I'll get back to you soon.
+            </div>
+          ) : (
+            <form onSubmit={handleContactSubmit} className="mb-6 space-y-3">
+              <div className="flex gap-3">
+                <input
+                  type="text"
+                  placeholder="Your Name *"
+                  value={contactForm.name}
+                  onChange={e => setContactForm(p => ({ ...p, name: e.target.value }))}
+                  className="flex-1 px-4 py-2.5 bg-slate-900/80 border border-white/10 rounded-xl text-white placeholder-gray-500 text-sm focus:outline-none focus:border-blue-500/50"
+                  required
+                />
+                <input
+                  type="email"
+                  placeholder="Your Email *"
+                  value={contactForm.email}
+                  onChange={e => setContactForm(p => ({ ...p, email: e.target.value }))}
+                  className="flex-1 px-4 py-2.5 bg-slate-900/80 border border-white/10 rounded-xl text-white placeholder-gray-500 text-sm focus:outline-none focus:border-blue-500/50"
+                  required
+                />
+              </div>
+              <input
+                type="text"
+                placeholder="Topic *"
+                value={contactForm.topic}
+                onChange={e => setContactForm(p => ({ ...p, topic: e.target.value }))}
+                className="w-full px-4 py-2.5 bg-slate-900/80 border border-white/10 rounded-xl text-white placeholder-gray-500 text-sm focus:outline-none focus:border-blue-500/50"
+                required
+              />
+              <textarea
+                placeholder="Your Message *"
+                value={contactForm.message}
+                onChange={e => setContactForm(p => ({ ...p, message: e.target.value }))}
+                rows={4}
+                className="w-full px-4 py-2.5 bg-slate-900/80 border border-white/10 rounded-xl text-white placeholder-gray-500 text-sm focus:outline-none focus:border-blue-500/50 resize-none"
+                required
+              />
+              {contactError && <p className="text-red-400 text-sm">{contactError}</p>}
+              <button
+                type="submit"
+                disabled={contactSending}
+                className="px-5 py-2.5 bg-gradient-to-r from-blue-500 to-cyan-500 text-white font-semibold text-sm rounded-xl hover:shadow-lg hover:shadow-blue-500/25 transition-all disabled:opacity-50"
+              >
+                {contactSending ? 'Sending...' : 'Send Message'}
+              </button>
+            </form>
+          )}
+
           <div className="animate-in flex flex-wrap gap-3">
             <a href="mailto:mugiranezaelisee0@gmail.com" className="cta-primary">
               <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24" strokeWidth={2}><path strokeLinecap="round" strokeLinejoin="round" d="M3 8l7.89 5.26a2 2 0 002.22 0L21 8M5 19h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z" /></svg>
@@ -458,7 +539,7 @@ const PortfolioWebsite = () => {
         </div>
       )
     }
-  ], [data, rating, hoverRating, showRatingModal, ratingName, ratingEmail, ratingSubmitted, heroPhase, expandedProjects, projectRatingStates, projectRatingNameInputs, handleDownloadCV]);
+  ], [data, rating, hoverRating, showRatingModal, ratingName, ratingEmail, ratingSubmitted, heroPhase, expandedProjects, projectRatingStates, projectRatingNameInputs, handleDownloadCV, contactForm, contactSending, contactSent, contactError, handleContactSubmit]);
 
   const navPositions = useMemo(() => {
     const r = 95;
