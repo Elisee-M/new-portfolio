@@ -137,7 +137,7 @@ const PortfolioWebsite = () => {
   const progressRefAnim = useRef(0);
 
   useEffect(() => {
-    if (displayedProgress === loadingProgress) return;
+    if (progressRefAnim.current === loadingProgress) return;
     const start = progressRefAnim.current;
     const diff = loadingProgress - start;
     const duration = 350;
@@ -151,6 +151,7 @@ const PortfolioWebsite = () => {
       if (t < 1) requestAnimationFrame(tick);
     });
     return () => cancelAnimationFrame(raf);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [loadingProgress]);
 
   // Hero entrance sequence
