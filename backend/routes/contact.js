@@ -3,19 +3,19 @@ const nodemailer = require('nodemailer');
 const router = express.Router();
 
 const transporter = nodemailer.createTransport({
-  host: 'smtp.gmail.com',
-  port: 465,
-  secure: true,
+  host: 'smtp-relay.brevo.com',
+  port: 587,
+  secure: false,
   auth: {
-    user: process.env.GMAIL_USER,
-    pass: process.env.GMAIL_PASS
+    user: process.env.BREVO_EMAIL,
+    pass: process.env.BREVO_SMTP_KEY
   }
 });
 
 transporter.verify().then(() => {
-  console.log('Gmail transporter ready');
+  console.log('Brevo transporter ready');
 }).catch(err => {
-  console.error('Gmail transporter error — check GMAIL_PASS in .env:', err.message);
+  console.error('Brevo transporter error — check BREVO_SMTP_KEY in .env:', err.message);
 });
 
 router.post('/', async (req, res) => {
@@ -26,8 +26,9 @@ router.post('/', async (req, res) => {
     }
 
     const mailOptions = {
-      from: process.env.GMAIL_USER,
-      to: process.env.GMAIL_USER,
+      from: `"Portfolio Contact" <${process.env.BREVO_EMAIL}>`,
+      to: process.env.BREVO_EMAIL,
+      replyTo: email,
       subject: `Portfolio Contact: ${topic}`,
       html: `
         <h3>New message from your portfolio</h3>
