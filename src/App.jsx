@@ -51,6 +51,7 @@ const PortfolioWebsite = () => {
   const [nameDone, setNameDone] = useState(false);
   const [subtitleDone, setSubtitleDone] = useState(false);
   const [sidebarKey, setSidebarKey] = useState(0);
+  const [hoveredNav, setHoveredNav] = useState(null);
   const [photoVisible, setPhotoVisible] = useState(false);
   const [showAllProjects, setShowAllProjects] = useState(false);
   const [showAllCertifications, setShowAllCertifications] = useState(false);
