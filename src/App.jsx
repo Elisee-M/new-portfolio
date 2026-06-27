@@ -1,5 +1,4 @@
 import React, { useEffect, useRef, useMemo, useState, useCallback } from 'react';
-import { motion } from 'framer-motion';
 import { PortfolioDataProvider, usePortfolioData } from './data/portfolioData';
 import AdminPanel from './components/AdminPanel';
 import CertificationsSection from './components/CertificationsSection';
@@ -914,28 +913,18 @@ const PortfolioWebsite = () => {
       {/* ===== SCROLLING CONTENT ===== */}
       <div ref={contentRef} className="relative z-10">
         {sections.map((sec, i) => (
-          <motion.section
+          <section
             key={sec.id}
             id={sec.id}
             ref={(el) => (sectionRefs.current[i] = el)}
-            initial={{ opacity: 0, y: 80 }}
-            whileInView={{ opacity: 1, y: 0 }}
-            viewport={{ once: true, margin: "-80px" }}
-            transition={{ duration: 0.7, ease: "easeOut" }}
             className="min-h-screen flex items-center px-6 md:px-12 py-20 pb-28 lg:pb-20 bg-slate-950/60"
           >
-            <motion.div
-              className={`w-full ${sec.side === 'right' ? 'lg:w-1/2 lg:pr-24' : 'lg:w-1/2 lg:pl-24 lg:ml-auto'}`}
-              initial={{ opacity: 0, x: sec.side === 'right' ? 40 : -40 }}
-              whileInView={{ opacity: 1, x: 0 }}
-              viewport={{ once: true, margin: "-80px" }}
-              transition={{ duration: 0.7, delay: 0.15, ease: "easeOut" }}
-            >
+            <div className={`w-full ${sec.side === 'right' ? 'lg:w-1/2 lg:pr-24' : 'lg:w-1/2 lg:pl-24 lg:ml-auto'}`}>
               <div className="max-w-lg">
                 {sec.content}
               </div>
-            </motion.div>
-          </motion.section>
+            </div>
+          </section>
         ))}
         <footer className="px-6 md:px-12 py-8 text-center">
           <p className="text-gray-500 text-sm">© 2024 Elisee. Built with React, GSAP & Tailwind CSS.</p>
