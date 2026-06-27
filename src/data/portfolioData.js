@@ -14,10 +14,10 @@ function headers(extra = {}) {
 }
 
 const defaultProjects = [
-  { title: "Arduino Smart Weight Scale", desc: "HX711 load cell amplifier with LCD display, real-time calibration.", tech: "Arduino, C++, HX711", image: "", demo: "", source: "" },
-  { title: "Keypad-Controlled Servo Gate", desc: "4x4 matrix keypad interface with servo actuator for gate control.", tech: "Arduino, Servo, Matrix", image: "", demo: "", source: "" },
-  { title: "IoT Sensor Network", desc: "Multi-sensor data collection with wireless transmission and cloud dashboard.", tech: "ESP32, MQTT, Node.js", image: "", demo: "", source: "" },
-  { title: "Smart Home Dashboard", desc: "Real-time monitoring and control interface for connected home devices.", tech: "React, WebSockets, Chart.js", image: "", demo: "", source: "" }
+  { title: "Arduino Smart Weight Scale", desc: "HX711 load cell amplifier with LCD display, real-time calibration.", tech: "Arduino, C++, HX711", image: "https://picsum.photos/seed/arduino/400/300", demo: "https://example.com/demo1", source: "https://github.com/elisee/arduino-scale" },
+  { title: "Keypad-Controlled Servo Gate", desc: "4x4 matrix keypad interface with servo actuator for gate control.", tech: "Arduino, Servo, Matrix", image: "https://picsum.photos/seed/keypad/400/300", demo: "https://example.com/demo2", source: "https://github.com/elisee/servo-gate" },
+  { title: "IoT Sensor Network", desc: "Multi-sensor data collection with wireless transmission and cloud dashboard.", tech: "ESP32, MQTT, Node.js", image: "https://picsum.photos/seed/iot/400/300", demo: "https://example.com/demo3", source: "https://github.com/elisee/iot-network" },
+  { title: "Smart Home Dashboard", desc: "Real-time monitoring and control interface for connected home devices.", tech: "React, WebSockets, Chart.js", image: "https://picsum.photos/seed/smarthome/400/300", demo: "https://example.com/demo4", source: "https://github.com/elisee/smart-home" }
 ];
 
 const defaultExperiences = [
@@ -42,7 +42,12 @@ const defaultCertifications = [
 const PortfolioDataContext = createContext(null);
 
 export function PortfolioDataProvider({ children }) {
-  const [data, setData] = useState({ projects: [], experiences: [], skills: [], certifications: [] });
+  const [data, setData] = useState({
+    projects: defaultProjects,
+    experiences: defaultExperiences,
+    skills: defaultSkills,
+    certifications: defaultCertifications
+  });
   const [apiReady, setApiReady] = useState(false);
 
   useEffect(() => {
@@ -55,13 +60,13 @@ export function PortfolioDataProvider({ children }) {
           fetch(`${API_URL}/skills`).then(r => r.json()),
         ]);
         setData({
-          projects: Array.isArray(projects) ? projects : [],
-          certifications: Array.isArray(certs) ? certs : [],
-          experiences: Array.isArray(exps) ? exps : [],
-          skills: Array.isArray(skills) ? skills : []
+          projects: Array.isArray(projects) && projects.length ? projects : defaultProjects,
+          certifications: Array.isArray(certs) && certs.length ? certs : defaultCertifications,
+          experiences: Array.isArray(exps) && exps.length ? exps : defaultExperiences,
+          skills: Array.isArray(skills) && skills.length ? skills : defaultSkills
         });
       } catch (e) {
-        console.warn('API unavailable:', e);
+        console.warn('API unavailable, using default data:', e);
       } finally {
         setApiReady(true);
       }

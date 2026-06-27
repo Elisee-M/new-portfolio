@@ -54,6 +54,10 @@ const PortfolioWebsite = () => {
   const [photoVisible, setPhotoVisible] = useState(false);
   const [showAllProjects, setShowAllProjects] = useState(false);
   const [showAllCertifications, setShowAllCertifications] = useState(false);
+  const [expandedProjects, setExpandedProjects] = useState({});
+  const [projectRatingStates, setProjectRatingStates] = useState({});
+  // projectRatingStates shape: { [key]: { rating: number, name: string, submitted: boolean } }
+  const [projectRatingNameInputs, setProjectRatingNameInputs] = useState({});
 
   useEffect(() => { window.scrollTo(0, 0); window.history.scrollRestoration = 'manual'; }, []);
 
@@ -191,32 +195,99 @@ const PortfolioWebsite = () => {
             </button>
           </div>
           <div className="space-y-3">
-            {data.projects.map((p, i) => (
-              <div key={p._id || p.id || i} className="card-in group backdrop-blur-2xl bg-slate-900/80 border border-white/10 rounded-xl p-5 hover:bg-blue-500/10 hover:border-blue-400/40 transition-all">
-                {p.image && (
-                  <img src={p.image} alt={p.title} className="w-full h-40 object-cover rounded-lg mb-3 border border-white/10" onError={e => { e.target.style.display = 'none' }} />
-                )}
-                <h3 className="text-base font-semibold text-blue-300 mb-1 group-hover:text-blue-200">{p.title}</h3>
-                <p className="text-sm text-gray-400 mb-2 leading-relaxed">{p.desc}</p>
-                {p.tech && <div className="flex flex-wrap gap-1.5">{p.tech.split(', ').map((t, ti) => <span key={ti} className="px-2 py-0.5 bg-blue-500/10 border border-blue-400/20 rounded text-xs text-blue-400/80">{t}</span>)}</div>}
-                {(p.demo || p.source) && (
-                  <div className="flex gap-2 mt-3">
-                    {p.demo && (
-                      <a href={p.demo} target="_blank" rel="noopener noreferrer" className="inline-flex items-center gap-1 px-3 py-1.5 text-xs bg-blue-600/20 border border-blue-400/30 text-blue-400 rounded-lg hover:bg-blue-600/30 transition-colors">
-                        <svg className="w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24" strokeWidth={2}><path strokeLinecap="round" strokeLinejoin="round" d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14" /></svg>
-                        Demo
-                      </a>
-                    )}
-                    {p.source && (
-                      <a href={p.source} target="_blank" rel="noopener noreferrer" className="inline-flex items-center gap-1 px-3 py-1.5 text-xs bg-slate-700/50 border border-white/20 text-gray-300 rounded-lg hover:bg-slate-700 transition-colors">
-                        <svg className="w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24" strokeWidth={2}><path strokeLinecap="round" strokeLinejoin="round" d="M10 20l4-16m4 4l4 4-4 4M6 16l-4-4 4-4" /></svg>
-                        Source
-                      </a>
+            {data.projects.map((p, i) => {
+              const isExpanded = expandedProjects[i] || false;
+              const rs = projectRatingStates[i] || {};
+              return (
+                <div key={p._id || p.id || i} className="card-in group backdrop-blur-2xl bg-slate-900/80 border border-white/10 rounded-xl p-5 hover:bg-blue-500/10 hover:border-blue-400/40 transition-all">
+                  <div className="flex items-start justify-between gap-2">
+                    <div className="flex-1 min-w-0">
+                      <h3 className="text-base font-semibold text-blue-300 mb-1 group-hover:text-blue-200">{p.title}</h3>
+                      <p className="text-sm text-gray-400 mb-2 leading-relaxed">{p.desc}</p>
+                      <div className="flex items-center gap-2">
+                        {p.demo && (
+                          <a href={p.demo} target="_blank" rel="noopener noreferrer" className="inline-flex items-center gap-1 px-3 py-1.5 text-xs bg-blue-600/20 border border-blue-400/30 text-blue-400 rounded-lg hover:bg-blue-600/30 transition-colors">
+                            <svg className="w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24" strokeWidth={2}><path strokeLinecap="round" strokeLinejoin="round" d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14" /></svg>
+                            Demo
+                          </a>
+                        )}
+                      </div>
+                    </div>
+                    <button
+                      onClick={() => setExpandedProjects(prev => ({ ...prev, [i]: !prev[i] }))}
+                      className="shrink-0 w-10 h-10 flex items-center justify-center rounded-full bg-slate-800/80 border border-blue-400/30 text-blue-400 hover:bg-blue-500/20 hover:border-blue-400/60 hover:shadow-[0_0_12px_rgba(59,130,246,0.3)] transition-all"
+                    >
+                      <svg className={`w-5 h-5 transition-transform duration-300 ${isExpanded ? 'rotate-180' : ''}`} fill="none" stroke="currentColor" viewBox="0 0 24 24" strokeWidth={2.5}>
+                        <path strokeLinecap="round" strokeLinejoin="round" d="M19 9l-7 7-7-7" />
+                      </svg>
+                    </button>
+                  </div>
+
+                  <div className={`overflow-hidden transition-all duration-500 ease-in-out ${isExpanded ? 'max-h-96 opacity-100 mt-3' : 'max-h-0 opacity-0'}`}>
+                    <div className="space-y-3">
+                      {p.image && (
+                        <img src={p.image} alt={p.title} className="w-full h-40 object-cover rounded-lg border border-white/10" onError={e => { e.target.style.display = 'none' }} />
+                      )}
+                      {p.tech && <div className="flex flex-wrap gap-1.5">{p.tech.split(', ').map((t, ti) => <span key={ti} className="px-2 py-0.5 bg-blue-500/10 border border-blue-400/20 rounded text-xs text-blue-400/80">{t}</span>)}</div>}
+                      {p.source && (
+                        <a href={p.source} target="_blank" rel="noopener noreferrer" className="inline-flex items-center gap-1 px-3 py-1.5 text-xs bg-slate-700/50 border border-white/20 text-gray-300 rounded-lg hover:bg-slate-700 transition-colors">
+                          <svg className="w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24" strokeWidth={2}><path strokeLinecap="round" strokeLinejoin="round" d="M10 20l4-16m4 4l4 4-4 4M6 16l-4-4 4-4" /></svg>
+                          Source
+                        </a>
+                      )}
+                    </div>
+                  </div>
+
+                  <div className="mt-3 pt-3 border-t border-white/5">
+                    {rs.submitted ? (
+                      <p className="text-xs text-blue-400/80 italic">Thank you, {rs.name}! Rated {rs.rating}/5</p>
+                    ) : (
+                      <>
+                        <div className="flex items-center gap-1">
+                          {[1, 2, 3, 4, 5].map((star) => (
+                            <button
+                              key={star}
+                              onClick={() => {
+                                if (!rs.rating) {
+                                  setProjectRatingStates(prev => ({ ...prev, [i]: { rating: star, name: '', submitted: false } }));
+                                }
+                              }}
+                              className={`text-lg transition-all ${rs.rating ? (star <= rs.rating ? 'text-yellow-400 scale-110' : 'text-gray-600') : 'text-gray-600 hover:text-yellow-400 hover:scale-125'}`}
+                            >
+                              ★
+                            </button>
+                          ))}
+                          {rs.rating > 0 && !rs.submitted && (
+                            <span className="text-xs text-gray-500 ml-1">({rs.rating}/5)</span>
+                          )}
+                        </div>
+                        {rs.rating > 0 && !rs.submitted && (
+                          <div className="flex items-center gap-2 mt-2">
+                            <input
+                              type="text"
+                              placeholder="Your name"
+                              value={projectRatingNameInputs[i] || ''}
+                              onChange={e => setProjectRatingNameInputs(prev => ({ ...prev, [i]: e.target.value }))}
+                              className="flex-1 px-3 py-1.5 text-xs bg-slate-800 border border-white/10 rounded-lg text-gray-200 placeholder-gray-500 focus:outline-none focus:border-blue-500/50"
+                            />
+                            <button
+                              onClick={() => {
+                                const name = (projectRatingNameInputs[i] || '').trim();
+                                if (!name) return;
+                                setProjectRatingStates(prev => ({ ...prev, [i]: { ...prev[i], name, submitted: true } }));
+                              }}
+                              className="px-3 py-1.5 text-xs bg-blue-500/20 border border-blue-400/50 rounded-lg text-blue-300 hover:bg-blue-500/30 transition-colors"
+                            >
+                              Submit
+                            </button>
+                          </div>
+                        )}
+                      </>
                     )}
                   </div>
-                )}
-              </div>
-            ))}
+                </div>
+              );
+            })}
           </div>
           <button onClick={() => setShowAllProjects(true)} className="sm:hidden mt-4 w-full cta-primary justify-center">
             <span>View All Projects</span>
@@ -348,7 +419,7 @@ const PortfolioWebsite = () => {
         </div>
       )
     }
-  ], [data, rating, hoverRating, showRatingModal, ratingName, ratingEmail, ratingSubmitted, heroPhase]);
+  ], [data, rating, hoverRating, showRatingModal, ratingName, ratingEmail, ratingSubmitted, heroPhase, expandedProjects, projectRatingStates, projectRatingNameInputs]);
 
   const navPositions = useMemo(() => {
     const r = 95;
@@ -545,32 +616,100 @@ const PortfolioWebsite = () => {
               </button>
             </div>
             <div className="p-6 pt-4 grid gap-4 md:grid-cols-2">
-              {data.projects.map((p, i) => (
-                <div key={p._id || p.id || i} className="backdrop-blur-2xl bg-slate-800/80 border border-white/10 rounded-xl p-5 hover:border-blue-400/40 transition-all">
-                  {p.image && (
-                    <img src={p.image} alt={p.title} className="w-full h-36 object-cover rounded-lg mb-3 border border-white/10" onError={e => { e.target.style.display = 'none' }} />
-                  )}
-                  <h4 className="text-base font-semibold text-blue-300 mb-1">{p.title}</h4>
-                  <p className="text-sm text-gray-400 mb-2 leading-relaxed">{p.desc}</p>
-                  {p.tech && <div className="flex flex-wrap gap-1.5">{p.tech.split(', ').map((t, ti) => <span key={ti} className="px-2 py-0.5 bg-blue-500/10 border border-blue-400/20 rounded text-xs text-blue-400/80">{t}</span>)}</div>}
-                  {(p.demo || p.source) && (
-                    <div className="flex gap-2 mt-3">
-                      {p.demo && (
-                        <a href={p.demo} target="_blank" rel="noopener noreferrer" className="inline-flex items-center gap-1 px-3 py-1.5 text-xs bg-blue-600/20 border border-blue-400/30 text-blue-400 rounded-lg hover:bg-blue-600/30 transition-colors">
-                          <svg className="w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24" strokeWidth={2}><path strokeLinecap="round" strokeLinejoin="round" d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14" /></svg>
-                          Demo
-                        </a>
-                      )}
-                      {p.source && (
-                        <a href={p.source} target="_blank" rel="noopener noreferrer" className="inline-flex items-center gap-1 px-3 py-1.5 text-xs bg-slate-700/50 border border-white/20 text-gray-300 rounded-lg hover:bg-slate-700 transition-colors">
-                          <svg className="w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24" strokeWidth={2}><path strokeLinecap="round" strokeLinejoin="round" d="M10 20l4-16m4 4l4 4-4 4M6 16l-4-4 4-4" /></svg>
-                          Source
-                        </a>
+              {data.projects.map((p, i) => {
+                const key = `modal-${i}`;
+                const isExpanded = expandedProjects[key] || false;
+                const rs = projectRatingStates[key] || {};
+                return (
+                  <div key={p._id || p.id || i} className="backdrop-blur-2xl bg-slate-800/80 border border-white/10 rounded-xl p-5 hover:border-blue-400/40 transition-all">
+                    <div className="flex items-start justify-between gap-2">
+                      <div className="flex-1 min-w-0">
+                        <h4 className="text-base font-semibold text-blue-300 mb-1">{p.title}</h4>
+                        <p className="text-sm text-gray-400 mb-2 leading-relaxed">{p.desc}</p>
+                        <div className="flex items-center gap-2">
+                          {p.demo && (
+                            <a href={p.demo} target="_blank" rel="noopener noreferrer" className="inline-flex items-center gap-1 px-3 py-1.5 text-xs bg-blue-600/20 border border-blue-400/30 text-blue-400 rounded-lg hover:bg-blue-600/30 transition-colors">
+                              <svg className="w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24" strokeWidth={2}><path strokeLinecap="round" strokeLinejoin="round" d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14" /></svg>
+                              Demo
+                            </a>
+                          )}
+                        </div>
+                      </div>
+                      <button
+                        onClick={() => setExpandedProjects(prev => ({ ...prev, [key]: !prev[key] }))}
+                        className="shrink-0 w-10 h-10 flex items-center justify-center rounded-full bg-slate-800/80 border border-blue-400/30 text-blue-400 hover:bg-blue-500/20 hover:border-blue-400/60 hover:shadow-[0_0_12px_rgba(59,130,246,0.3)] transition-all"
+                      >
+                        <svg className={`w-5 h-5 transition-transform duration-300 ${isExpanded ? 'rotate-180' : ''}`} fill="none" stroke="currentColor" viewBox="0 0 24 24" strokeWidth={2.5}>
+                          <path strokeLinecap="round" strokeLinejoin="round" d="M19 9l-7 7-7-7" />
+                        </svg>
+                      </button>
+                    </div>
+
+                    <div className={`overflow-hidden transition-all duration-500 ease-in-out ${isExpanded ? 'max-h-96 opacity-100 mt-3' : 'max-h-0 opacity-0'}`}>
+                      <div className="space-y-3">
+                        {p.image && (
+                          <img src={p.image} alt={p.title} className="w-full h-36 object-cover rounded-lg border border-white/10" onError={e => { e.target.style.display = 'none' }} />
+                        )}
+                        {p.tech && <div className="flex flex-wrap gap-1.5">{p.tech.split(', ').map((t, ti) => <span key={ti} className="px-2 py-0.5 bg-blue-500/10 border border-blue-400/20 rounded text-xs text-blue-400/80">{t}</span>)}</div>}
+                        {p.source && (
+                          <a href={p.source} target="_blank" rel="noopener noreferrer" className="inline-flex items-center gap-1 px-3 py-1.5 text-xs bg-slate-700/50 border border-white/20 text-gray-300 rounded-lg hover:bg-slate-700 transition-colors">
+                            <svg className="w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24" strokeWidth={2}><path strokeLinecap="round" strokeLinejoin="round" d="M10 20l4-16m4 4l4 4-4 4M6 16l-4-4 4-4" /></svg>
+                            Source
+                          </a>
+                        )}
+                      </div>
+                    </div>
+
+                    <div className="mt-3 pt-3 border-t border-white/5">
+                      {rs.submitted ? (
+                        <p className="text-xs text-blue-400/80 italic">Thank you, {rs.name}! Rated {rs.rating}/5</p>
+                      ) : (
+                        <>
+                          <div className="flex items-center gap-1">
+                            {[1, 2, 3, 4, 5].map((star) => (
+                              <button
+                                key={star}
+                                onClick={() => {
+                                  if (!rs.rating) {
+                                    setProjectRatingStates(prev => ({ ...prev, [key]: { rating: star, name: '', submitted: false } }));
+                                  }
+                                }}
+                                className={`text-lg transition-all ${rs.rating ? (star <= rs.rating ? 'text-yellow-400 scale-110' : 'text-gray-600') : 'text-gray-600 hover:text-yellow-400 hover:scale-125'}`}
+                              >
+                                ★
+                              </button>
+                            ))}
+                            {rs.rating > 0 && !rs.submitted && (
+                              <span className="text-xs text-gray-500 ml-1">({rs.rating}/5)</span>
+                            )}
+                          </div>
+                          {rs.rating > 0 && !rs.submitted && (
+                            <div className="flex items-center gap-2 mt-2">
+                              <input
+                                type="text"
+                                placeholder="Your name"
+                                value={projectRatingNameInputs[key] || ''}
+                                onChange={e => setProjectRatingNameInputs(prev => ({ ...prev, [key]: e.target.value }))}
+                                className="flex-1 px-3 py-1.5 text-xs bg-slate-800 border border-white/10 rounded-lg text-gray-200 placeholder-gray-500 focus:outline-none focus:border-blue-500/50"
+                              />
+                              <button
+                                onClick={() => {
+                                  const name = (projectRatingNameInputs[key] || '').trim();
+                                  if (!name) return;
+                                  setProjectRatingStates(prev => ({ ...prev, [key]: { ...prev[key], name, submitted: true } }));
+                                }}
+                                className="px-3 py-1.5 text-xs bg-blue-500/20 border border-blue-400/50 rounded-lg text-blue-300 hover:bg-blue-500/30 transition-colors"
+                              >
+                                Submit
+                              </button>
+                            </div>
+                          )}
+                        </>
                       )}
                     </div>
-                  )}
-                </div>
-              ))}
+                  </div>
+                );
+              })}
               {data.projects.length === 0 && <p className="text-gray-500 text-center py-12 col-span-2">No projects yet.</p>}
             </div>
           </div>
