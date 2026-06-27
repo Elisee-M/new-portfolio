@@ -134,6 +134,25 @@ const PortfolioWebsite = () => {
     }
   }, [loadingStep]);
 
+  const progressRefAnim = useRef(0);
+
+  useEffect(() => {
+    if (displayedProgress === loadingProgress) return;
+    const start = progressRefAnim.current;
+    const diff = loadingProgress - start;
+    const duration = 350;
+    const startTime = performance.now();
+    const raf = requestAnimationFrame(function tick(now) {
+      const t = Math.min((now - startTime) / duration, 1);
+      const eased = 1 - Math.pow(1 - t, 3);
+      const val = Math.round(start + diff * eased);
+      progressRefAnim.current = val;
+      setDisplayedProgress(val);
+      if (t < 1) requestAnimationFrame(tick);
+    });
+    return () => cancelAnimationFrame(raf);
+  }, [loadingProgress]);
+
   // Hero entrance sequence
   useEffect(() => {
     if (loading) return;
@@ -690,13 +709,15 @@ const PortfolioWebsite = () => {
               <div className="h-full w-full rounded-full bg-gradient-to-r from-blue-500 via-cyan-400 to-blue-500 transition-all duration-700 ease-out" style={{ width: `${loadingProgress}%` }}></div>
             </div>
             <div className="mt-5 flex items-center justify-between">
-              <div className="flex items-center gap-2">
-                <span className="w-1.5 h-1.5 rounded-full bg-blue-400 animate-pulse"></span>
+              <div className="flex items-center gap-2.5">
+                <svg className="w-4 h-4 text-blue-400 shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24" strokeWidth={2}>
+                  <path strokeLinecap="round" strokeLinejoin="round" d={loaderSteps[Math.min(loadingStep, loaderSteps.length - 1)]?.icon} />
+                </svg>
                 <p className="text-sm text-gray-400 font-mono">
                   {loaderSteps[Math.min(loadingStep, loaderSteps.length - 1)]?.text}
                 </p>
               </div>
-              <span className="text-sm font-mono text-gray-500">({loadingProgress}%)</span>
+              <span className="text-sm font-mono text-gray-500 min-w-[4rem] text-right">({displayedProgress}%)</span>
             </div>
           </div>
         </div>
