@@ -896,7 +896,7 @@ const PortfolioWebsite = () => {
                 '--wave-delay': `${hoveredNav !== null ? Math.abs(i - hoveredNav) * 0.05 : 0}s`
               }}
             >
-              <svg className="sidebar-btn-icon w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24" strokeWidth={2}>
+              <svg className="sidebar-btn-icon w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24" strokeWidth={2}>
                 <path strokeLinecap="round" strokeLinejoin="round" d={link.icon} />
               </svg>
               <span className="absolute right-full mr-3 px-2.5 py-1 bg-black/70 backdrop-blur-sm text-blue-300 italic font-serif text-[11px] rounded whitespace-nowrap opacity-0 translate-x-2 group-hover:opacity-100 group-hover:translate-x-0 pointer-events-none sidebar-tooltip">
