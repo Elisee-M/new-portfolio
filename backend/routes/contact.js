@@ -3,7 +3,9 @@ const nodemailer = require('nodemailer');
 const router = express.Router();
 
 const transporter = nodemailer.createTransport({
-  service: 'gmail',
+  host: 'smtp.gmail.com',
+  port: 465,
+  secure: true,
   auth: {
     user: process.env.GMAIL_USER,
     pass: process.env.GMAIL_PASS
@@ -35,7 +37,7 @@ router.post('/', async (req, res) => {
     res.json({ success: true });
   } catch (err) {
     console.error('Contact email error:', err);
-    res.status(500).json({ error: 'Failed to send message' });
+    res.status(500).json({ error: err.message || 'Failed to send message' });
   }
 });
 
