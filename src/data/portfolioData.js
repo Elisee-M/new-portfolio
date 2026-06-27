@@ -42,6 +42,7 @@ const defaultCertifications = [
 const PortfolioDataContext = createContext(null);
 
 export function PortfolioDataProvider({ children }) {
+  const [ratings, setRatings] = useState([]);
   const [data, setData] = useState({
     projects: defaultProjects,
     experiences: defaultExperiences,

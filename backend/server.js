@@ -12,6 +12,7 @@ const skillRoutes = require('./routes/skills');
 const uploadRoutes = require('./routes/upload');
 const cvRoutes = require('./routes/cv');
 const contactRoutes = require('./routes/contact');
+const ratingRoutes = require('./routes/ratings');
 
 
 const app = express();
@@ -29,6 +30,7 @@ app.use('/api/skills', skillRoutes);
 app.use('/api/upload', uploadRoutes);
 app.use('/api/cv', cvRoutes);
 app.use('/api/contact', contactRoutes);
+app.use('/api/ratings', ratingRoutes);
 
 app.get('/api/health', (req, res) => res.json({ ok: true }));
 
