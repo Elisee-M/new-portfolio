@@ -21,7 +21,9 @@ const upload = multer({
   storage,
   limits: { fileSize: 10 * 1024 * 1024 },
   fileFilter: (req, file, cb) => {
-    if (file.mimetype === 'application/pdf') return cb(null, true);
+    const allowedMimes = ['application/pdf', 'application/x-pdf', 'application/acrobat'];
+    const ext = path.extname(file.originalname).toLowerCase();
+    if (allowedMimes.includes(file.mimetype) || ext === '.pdf') return cb(null, true);
     cb(new Error('Only PDF files are allowed'));
   }
 });
