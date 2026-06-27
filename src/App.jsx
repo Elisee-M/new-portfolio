@@ -919,7 +919,7 @@ const PortfolioWebsite = () => {
             ref={(el) => (sectionRefs.current[i] = el)}
             className="min-h-screen flex items-center px-6 md:px-12 py-20 pb-28 lg:pb-20 bg-slate-950/60"
           >
-            <div className={`w-full ${sec.side === 'right' ? 'lg:w-2/5 lg:pr-20' : 'lg:w-2/5 lg:pl-20 lg:pr-20 lg:ml-auto'}`}>
+            <div className={`w-full ${sec.side === 'right' ? 'lg:w-2/5 lg:pr-20' : 'lg:w-1/2 lg:pl-20 lg:pr-20 lg:ml-auto'}`}>
               <div className="max-w-lg">
                 {sec.content}
               </div>
