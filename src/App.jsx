@@ -542,7 +542,7 @@ const PortfolioWebsite = () => {
   ], [data, rating, hoverRating, showRatingModal, ratingName, ratingEmail, ratingSubmitted, heroPhase, expandedProjects, projectRatingStates, projectRatingNameInputs, handleDownloadCV, contactForm, contactSending, contactSent, contactError, handleContactSubmit]);
 
   const navPositions = useMemo(() => {
-    const r = 95;
+    const r = 70;
     const centerRight = 16;
     const centerY = typeof window !== 'undefined' ? window.innerHeight * 0.45 : 500;
     return navLinks.map((link, i) => {
