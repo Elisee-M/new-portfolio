@@ -70,7 +70,7 @@ const PortfolioWebsite = () => {
     setContactSending(true);
     setContactError('');
     try {
-      const res = await fetch('https://formspree.io/f/myzzejqv', {
+      const res = await fetch(`${process.env.REACT_APP_API_URL || 'http://localhost:5000/api'}/contact`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ name, email, topic, message })
