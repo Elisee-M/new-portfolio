@@ -162,7 +162,7 @@ const PortfolioWebsite = () => {
 
   useEffect(() => {
     if (heroPhase !== 1) return;
-    const t = setTimeout(() => { setHeroPhase(2); setPhotoVisible(true); }, 500); // show name + photo
+    const t = setTimeout(() => { setHeroPhase(2); setPhotoVisible(true); }, 1000); // show name + photo
     return () => clearTimeout(t);
   }, [heroPhase]);
 
