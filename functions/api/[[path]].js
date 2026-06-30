@@ -73,7 +73,10 @@ export async function onRequest(context) {
       } catch { return json({ error: 'Invalid token' }, 401); }
     }
 
-    if (url.pathname === '/api/health') return json({ status: 'ok' });
+    if (url.pathname === '/api/health') {
+      if (env.BACKEND_URL) fetch(env.BACKEND_URL + '/api/health').catch(() => {});
+      return json({ status: 'ok' });
+    }
 
     if (url.pathname === '/api/contact' && request.method === 'POST') {
       const { name, email, topic, message } = body;
