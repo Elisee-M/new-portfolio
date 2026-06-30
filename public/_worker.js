@@ -48,11 +48,11 @@ function getToken(request) {
 }
 
 export default {
-  async fetch(request, env) {
+  async fetch(request, env, context) {
     if (request.method === 'OPTIONS') return new Response(null, { headers: corsHeaders });
 
     const url = new URL(request.url);
-    if (!url.pathname.startsWith('/api/')) return env.ASSETS.fetch(request);
+    if (!url.pathname.startsWith('/api/')) return context.next();
 
     try {
       const body = ['POST', 'PUT'].includes(request.method) ? await request.json().catch(() => ({})) : {};
