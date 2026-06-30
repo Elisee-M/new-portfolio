@@ -49,12 +49,12 @@ function getToken(request) {
 
 export default {
   async fetch(request, env, context) {
-    if (request.method === 'OPTIONS') return new Response(null, { headers: corsHeaders });
-
-    const url = new URL(request.url);
-    if (!url.pathname.startsWith('/api/')) return context.next();
-
     try {
+      if (request.method === 'OPTIONS') return new Response(null, { headers: corsHeaders });
+
+      const url = new URL(request.url);
+      if (!url.pathname.startsWith('/api/')) return typeof context.next === 'function' ? context.next() : new Response('Not found', { status: 404 });
+
       const body = ['POST', 'PUT'].includes(request.method) ? await request.json().catch(() => ({})) : {};
 
       if (url.pathname === '/api/auth/login' && request.method === 'POST') {
