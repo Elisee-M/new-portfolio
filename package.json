@@ -19,7 +19,8 @@
     "postbuild": "node -e \"if(!process.env.CI)require('child_process').execSync('react-snap',{stdio:'inherit',shell:true})\"",
     "deploy": "npm run build && wrangler deploy",
     "test": "react-scripts test",
-    "eject": "react-scripts eject"
+    "eject": "react-scripts eject",
+    "preview": "npm run build && wrangler dev"
   },
   "eslintConfig": {
     "extends": [
@@ -44,7 +45,8 @@
     "postcss": "^8.5.15",
     "react-snap": "^1.23.0",
     "sharp": "^0.35.2",
-    "tailwindcss": "^3.4.19"
+    "tailwindcss": "^3.4.19",
+    "wrangler": "^4.105.0"
   },
   "reactSnap": {
     "sourceMaps": false,
