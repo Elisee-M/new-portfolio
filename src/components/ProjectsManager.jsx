@@ -1,7 +1,7 @@
 import React, { useState, useRef } from 'react';
 import { usePortfolioData } from '../data/portfolioData';
 
-const API_URL = process.env.REACT_APP_API_URL || 'http://localhost:5000/api';
+const API_URL = process.env.REACT_APP_API_URL || '/api';
 
 export default function ProjectsManager() {
   const { data, addProject, updateProject, deleteProject } = usePortfolioData();

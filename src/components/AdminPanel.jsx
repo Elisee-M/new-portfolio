@@ -5,7 +5,7 @@ import SkillsManager from './SkillsManager';
 import ExperienceManager from './ExperienceManager';
 import CertificationsManager from './CertificationsManager';
 
-const API_URL = process.env.REACT_APP_API_URL || 'http://localhost:5000/api';
+const API_URL = process.env.REACT_APP_API_URL || '/api';
 
 export default function AdminPanel({ onClose }) {
   const [loggedIn, setLoggedIn] = useState(() => !!sessionStorage.getItem('portfolio_token'));
