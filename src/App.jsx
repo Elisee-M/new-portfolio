@@ -52,6 +52,7 @@ const PortfolioWebsite = () => {
   const [nameDone, setNameDone] = useState(false);
   const [subtitleDone, setSubtitleDone] = useState(false);
   const [sidebarKey, setSidebarKey] = useState(0);
+  const [scrollLocked, setScrollLocked] = useState(true);
   const [hoveredNav, setHoveredNav] = useState(null);
   const [photoVisible, setPhotoVisible] = useState(false);
   const [showAllProjects, setShowAllProjects] = useState(false);
@@ -189,6 +190,17 @@ const PortfolioWebsite = () => {
     const t = setTimeout(() => setSidebarKey((k) => k + 1), 500); // 0.5s after buttons, animate sidebar
     return () => clearTimeout(t);
   }, [heroPhase]);
+
+  useEffect(() => {
+    document.body.style.overflow = scrollLocked ? 'hidden' : '';
+    return () => { document.body.style.overflow = ''; };
+  }, [scrollLocked]);
+
+  useEffect(() => {
+    if (!sidebarKey) return;
+    const t = setTimeout(() => setScrollLocked(false), 1600);
+    return () => clearTimeout(t);
+  }, [sidebarKey]);
 
   const photoRef = useRef(null);
   const contentRef = useRef(null);
