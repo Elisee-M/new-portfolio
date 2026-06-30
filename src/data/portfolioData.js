@@ -27,10 +27,45 @@ const defaultExperiences = [
 ];
 
 const defaultSkills = [
-  { cat: "Frontend", items: ["React", "JavaScript", "TypeScript", "GSAP", "Tailwind CSS"] },
-  { cat: "Backend", items: ["Node.js", "Python", "REST APIs", "MongoDB", "PostgreSQL"] },
-  { cat: "Hardware", items: ["Arduino", "IoT Systems", "PCB Design", "Sensors & ADC"] },
-  { cat: "Tools", items: ["Git", "Docker", "Linux", "Figma", "VS Code"] }
+  {
+    cat: "Frontend",
+    items: [
+      { name: "React", level: 90 },
+      { name: "JavaScript", level: 85 },
+      { name: "TypeScript", level: 75 },
+      { name: "GSAP", level: 80 },
+      { name: "Tailwind CSS", level: 88 }
+    ]
+  },
+  {
+    cat: "Backend",
+    items: [
+      { name: "Node.js", level: 85 },
+      { name: "Python", level: 70 },
+      { name: "REST APIs", level: 88 },
+      { name: "MongoDB", level: 78 },
+      { name: "PostgreSQL", level: 72 }
+    ]
+  },
+  {
+    cat: "Hardware",
+    items: [
+      { name: "Arduino", level: 92 },
+      { name: "IoT Systems", level: 85 },
+      { name: "PCB Design", level: 65 },
+      { name: "Sensors & ADC", level: 80 }
+    ]
+  },
+  {
+    cat: "Tools",
+    items: [
+      { name: "Git", level: 88 },
+      { name: "Docker", level: 72 },
+      { name: "Linux", level: 78 },
+      { name: "Figma", level: 60 },
+      { name: "VS Code", level: 95 }
+    ]
+  }
 ];
 
 const defaultCertifications = [
@@ -62,11 +97,20 @@ export function PortfolioDataProvider({ children }) {
           fetch(`${API_URL}/skills`).then(r => r.json()),
           fetch(`${API_URL}/cv`).then(r => r.ok ? r.json() : { url: null }),
         ]);
+        const normalizedSkills = Array.isArray(skills) && skills.length
+          ? skills.map(cat => ({
+              ...cat,
+              items: cat.items.map(item =>
+                typeof item === 'string' ? { name: item, level: 80 } : item
+              )
+            }))
+          : defaultSkills;
+
         setData({
           projects: Array.isArray(projects) && projects.length ? projects : defaultProjects,
           certifications: Array.isArray(certs) && certs.length ? certs : defaultCertifications,
           experiences: Array.isArray(exps) && exps.length ? exps : defaultExperiences,
-          skills: Array.isArray(skills) && skills.length ? skills : defaultSkills,
+          skills: normalizedSkills,
           cvUrl: cvRes.url || null
         });
       } catch (e) {
