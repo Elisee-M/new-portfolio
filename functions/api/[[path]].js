@@ -78,18 +78,31 @@ export async function onRequest(context) {
     if (url.pathname === '/api/contact' && request.method === 'POST') {
       const { name, email, topic, message } = body;
       if (!name || !email || !topic || !message) return json({ error: 'All fields are required' }, 400);
-      const res = await fetch('https://api.resend.com/emails', {
-        method: 'POST',
-        headers: { Authorization: 'Bearer ' + env.RESEND_API_KEY, 'Content-Type': 'application/json' },
-        body: JSON.stringify({
-          from: 'Portfolio Contact <onboarding@resend.dev>',
-          to: env.RESEND_EMAIL,
-          subject: 'Portfolio Contact: ' + topic,
-          html: '<p><strong>Name:</strong> ' + name + '</p><p><strong>Email:</strong> ' + email + '</p><p><strong>Message:</strong></p><p>' + message + '</p>',
-        }),
-      });
-      if (res.ok) return json({ ok: true });
-      return json({ error: 'Failed to send email' }, 500);
+      const resendHeaders = { Authorization: 'Bearer ' + env.RESEND_API_KEY, 'Content-Type': 'application/json' };
+        const [notify, reply] = await Promise.all([
+          fetch('https://api.resend.com/emails', {
+            method: 'POST',
+            headers: resendHeaders,
+            body: JSON.stringify({
+              from: 'Elisee <onboarding@resend.dev>',
+              to: env.RESEND_EMAIL,
+              subject: 'Portfolio Contact: ' + topic,
+              html: '<p><strong>Name:</strong> ' + name + '</p><p><strong>Email:</strong> ' + email + '</p><p><strong>Message:</strong></p><p>' + message + '</p>',
+            }),
+          }),
+          fetch('https://api.resend.com/emails', {
+            method: 'POST',
+            headers: resendHeaders,
+            body: JSON.stringify({
+              from: 'Elisee <onboarding@resend.dev>',
+              to: email,
+              subject: "Thanks for contacting me!",
+              html: "I got your message \u{1F44D} I'll reply soon.",
+            }),
+          }),
+        ]);
+        if (notify.ok) return json({ ok: true, replySent: reply.ok });
+        return json({ error: 'Failed to send email' }, 500);
     }
 
     if (env.BACKEND_URL) {
