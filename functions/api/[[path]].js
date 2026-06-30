@@ -84,7 +84,7 @@ export async function onRequest(context) {
             method: 'POST',
             headers: resendHeaders,
             body: JSON.stringify({
-              from: 'Elisee <onboarding@resend.dev>',
+              from: 'Elisee <mugiranezaelisee0@gmail.com>',
               to: env.RESEND_EMAIL,
               subject: 'Portfolio Contact: ' + topic,
               html: '<p><strong>Name:</strong> ' + name + '</p><p><strong>Email:</strong> ' + email + '</p><p><strong>Message:</strong></p><p>' + message + '</p>',
@@ -94,7 +94,7 @@ export async function onRequest(context) {
             method: 'POST',
             headers: resendHeaders,
             body: JSON.stringify({
-              from: 'Elisee <onboarding@resend.dev>',
+              from: 'Elisee <mugiranezaelisee0@gmail.com>',
               to: email,
               subject: "Thanks for contacting me!",
               html: "I got your message \u{1F44D} I'll reply soon.",
