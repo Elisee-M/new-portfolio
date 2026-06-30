@@ -248,27 +248,8 @@ const PortfolioWebsite = () => {
           <div className="grid grid-cols-2 gap-3">
             {data.skills.map((group, gi) => (
               <div key={gi} className="card-in backdrop-blur-2xl bg-slate-900/80 border border-white/10 rounded-xl p-4 hover:border-blue-500/30">
-                <h3 className="text-blue-400 font-semibold mb-3 text-xs tracking-wider uppercase">{group.cat}</h3>
-                <div className="space-y-2.5">
-                  {group.items.map((s, si) => {
-                    const name = typeof s === 'string' ? s : s.name;
-                    const level = typeof s === 'string' ? 80 : s.level;
-                    return (
-                      <div key={si}>
-                        <div className="flex justify-between items-center mb-1">
-                          <span className="text-xs text-gray-300">{name}</span>
-                          <span className="text-[10px] font-mono text-blue-400/70">{level}%</span>
-                        </div>
-                        <div className="h-1.5 bg-slate-700/50 rounded-full overflow-hidden">
-                          <div
-                            className="h-full rounded-full bg-gradient-to-r from-blue-500 to-cyan-400 skill-bar"
-                            style={{ width: `${level}%` }}
-                          />
-                        </div>
-                      </div>
-                    );
-                  })}
-                </div>
+                <h3 className="text-blue-400 font-semibold mb-2 text-xs tracking-wider uppercase">{group.cat}</h3>
+                <div className="flex flex-wrap gap-1.5">{group.items.map((s, si) => <span key={si} className="px-2 py-1 bg-blue-500/10 border border-blue-400/20 rounded text-xs text-blue-300">{s}</span>)}</div>
               </div>
             ))}
           </div>
