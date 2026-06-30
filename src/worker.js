@@ -106,7 +106,7 @@ export default {
         return new Response(text, { status: res.status, headers: { 'Content-Type': 'application/json', ...corsHeaders } });
       }
 
-      return json({ error: 'Backend not configured. Set BACKEND_URL env var or deploy backend separately.' }, 501);
+      return json({ error: 'Backend not configured.' }, 501);
     } catch (err) {
       return json({ error: err.message }, 500);
     }
