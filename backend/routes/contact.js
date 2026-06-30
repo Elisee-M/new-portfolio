@@ -3,15 +3,14 @@ const { Resend } = require('resend');
 const nodemailer = require('nodemailer');
 const router = express.Router();
 
-const resend = new Resend(process.env.RESEND_API_KEY);
+const resend = process.env.RESEND_API_KEY ? new Resend(process.env.RESEND_API_KEY) : null;
 
-const gmailTransporter = nodemailer.createTransport({
-  service: 'gmail',
-  auth: {
-    user: process.env.GMAIL_USER,
-    pass: process.env.GMAIL_APP_PASSWORD,
-  },
-});
+const gmailTransporter = (process.env.GMAIL_USER && process.env.GMAIL_APP_PASSWORD)
+  ? nodemailer.createTransport({
+      service: 'gmail',
+      auth: { user: process.env.GMAIL_USER, pass: process.env.GMAIL_APP_PASSWORD },
+    })
+  : null;
 
 router.post('/', async (req, res) => {
   try {
@@ -20,7 +19,7 @@ router.post('/', async (req, res) => {
       return res.status(400).json({ error: 'All fields are required' });
     }
 
-    await resend.emails.send({
+    if (resend) await resend.emails.send({
       from: 'Portfolio Contact <onboarding@resend.dev>',
       to: [process.env.RESEND_EMAIL],
       replyTo: email,
@@ -35,7 +34,7 @@ router.post('/', async (req, res) => {
       `
     });
 
-    await gmailTransporter.sendMail({
+    if (gmailTransporter) await gmailTransporter.sendMail({
       from: process.env.GMAIL_USER,
       to: email,
       subject: `Thank you for reaching out, ${name}!`,
